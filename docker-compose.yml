@@ -1,0 +1,71 @@
+# Docker Compose for Independent Building Analytics Platform
+# Simple stack: InfluxDB for time-series storage, no AWS required
+
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: bms-influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password123  # Change this!
+      - DOCKER_INFLUXDB_INIT_ORG=building-analytics
+      - DOCKER_INFLUXDB_INIT_BUCKET=bms_data
+      - DOCKER_INFLUXDB_INIT_RETENTION=365d
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-token  # Change this!
+    restart: unless-stopped
+
+  # Optional: Grafana for quick visualization (but Plotly is better for research)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bms-grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=marcusolsson-json-datasource
+    depends_on:
+      - influxdb
+    restart: unless-stopped
+
+volumes:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
+
+# =============================================================================
+# USAGE:
+# =============================================================================
+#
+# 1. Start services:
+#    docker-compose up -d
+#
+# 2. Access InfluxDB UI:
+#    http://localhost:8086
+#    Login: admin / password123
+#
+# 3. Access Grafana (optional):
+#    http://localhost:3000
+#    Login: admin / admin
+#
+# 4. Get API token:
+#    - Go to InfluxDB UI → Data → API Tokens
+#    - Copy your token
+#    - Update example_ingestion.py with your token
+#
+# 5. Stop services:
+#    docker-compose down
+#
+# 6. Delete all data (fresh start):
+#    docker-compose down -v
+#
+# =============================================================================
