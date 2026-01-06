@@ -18,6 +18,42 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 
 # =============================================================================
+# HELPER FUNCTION - Add Dark Background to HTML
+# =============================================================================
+
+def write_html_with_dark_bg(fig, filename):
+    """Write Plotly figure to HTML with full black page background"""
+    # Write the standard HTML
+    fig.write_html(filename, config={'responsive': True})
+
+    # Read it back
+    with open(filename, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+
+    # Inject CSS for black background and remove margins
+    custom_css = """
+    <style>
+        body {
+            background-color: #000000;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        .plotly-graph-div {
+            height: 100vh !important;
+            width: 100vw !important;
+        }
+    </style>
+    """
+
+    # Insert CSS after <head> tag
+    html_content = html_content.replace('<head>', '<head>' + custom_css)
+
+    # Write back
+    with open(filename, 'w', encoding='utf-8') as f:
+        f.write(html_content)
+
+# =============================================================================
 # LOAD DATA
 # =============================================================================
 
@@ -91,7 +127,7 @@ fig1.update_layout(
     )
 )
 
-fig1.write_html('timeseries_01_all_zones.html', config={'responsive': True})
+write_html_with_dark_bg(fig1, 'timeseries_01_all_zones.html')
 print("[OK] Created: timeseries_01_all_zones.html")
 
 # =============================================================================
@@ -144,7 +180,7 @@ fig2.update_yaxes(
     showgrid=True
 )
 
-fig2.write_html('timeseries_02_separate_panels.html', config={'responsive': True})
+write_html_with_dark_bg(fig2, 'timeseries_02_separate_panels.html')
 print("[OK] Created: timeseries_02_separate_panels.html")
 
 # =============================================================================
@@ -232,7 +268,7 @@ fig3.update_layout(
     ]
 )
 
-fig3.write_html('timeseries_03_weekly_patterns.html', config={'responsive': True})
+write_html_with_dark_bg(fig3, 'timeseries_03_weekly_patterns.html')
 print("[OK] Created: timeseries_03_weekly_patterns.html")
 
 # =============================================================================
@@ -308,7 +344,7 @@ fig4.update_layout(
     )
 )
 
-fig4.write_html('timeseries_04_monday_detail.html', config={'responsive': True})
+write_html_with_dark_bg(fig4, 'timeseries_04_monday_detail.html')
 print("[OK] Created: timeseries_04_monday_detail.html")
 
 # =============================================================================
