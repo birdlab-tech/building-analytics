@@ -80,7 +80,7 @@ fig1.update_layout(
     paper_bgcolor='#2D2D2D',
     font=dict(color='#E0E0E0'),
     hovermode='x unified',
-    height=600,
+    autosize=True,
     legend=dict(
         orientation='h',
         yanchor='bottom',
@@ -91,7 +91,7 @@ fig1.update_layout(
     )
 )
 
-fig1.write_html('timeseries_01_all_zones.html')
+fig1.write_html('timeseries_01_all_zones.html', config={'responsive': True})
 print("[OK] Created: timeseries_01_all_zones.html")
 
 # =============================================================================
@@ -133,7 +133,7 @@ fig2.update_layout(
     paper_bgcolor='#2D2D2D',
     font=dict(color='#E0E0E0'),
     hovermode='x unified',
-    height=900
+    autosize=True
 )
 
 fig2.update_xaxes(gridcolor='#333333', color='#E0E0E0', showgrid=True)
@@ -144,7 +144,7 @@ fig2.update_yaxes(
     showgrid=True
 )
 
-fig2.write_html('timeseries_02_separate_panels.html')
+fig2.write_html('timeseries_02_separate_panels.html', config={'responsive': True})
 print("[OK] Created: timeseries_02_separate_panels.html")
 
 # =============================================================================
@@ -212,7 +212,7 @@ fig3.update_layout(
     paper_bgcolor='#2D2D2D',
     font=dict(color='#E0E0E0'),
     hovermode='x unified',
-    height=600,
+    autosize=True,
     legend=dict(
         orientation='h',
         yanchor='bottom',
@@ -232,7 +232,7 @@ fig3.update_layout(
     ]
 )
 
-fig3.write_html('timeseries_03_weekly_patterns.html')
+fig3.write_html('timeseries_03_weekly_patterns.html', config={'responsive': True})
 print("[OK] Created: timeseries_03_weekly_patterns.html")
 
 # =============================================================================
@@ -297,7 +297,7 @@ fig4.update_layout(
     paper_bgcolor='#2D2D2D',
     font=dict(color='#E0E0E0'),
     hovermode='x unified',
-    height=600,
+    autosize=True,
     legend=dict(
         orientation='h',
         yanchor='bottom',
@@ -308,7 +308,7 @@ fig4.update_layout(
     )
 )
 
-fig4.write_html('timeseries_04_monday_detail.html')
+fig4.write_html('timeseries_04_monday_detail.html', config={'responsive': True})
 print("[OK] Created: timeseries_04_monday_detail.html")
 
 # =============================================================================
