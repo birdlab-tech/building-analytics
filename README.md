@@ -56,6 +56,29 @@ No database required. Directly analyzes JSON and creates Plotly visualizations.
 python quick_viz_example.py
 ```
 
+#### `generate_fake_timeseries.py` + `visualize_timeseries.py` - Grafana-Style Demo ⭐
+
+Perfect for demonstrating to Dan! Creates realistic time-series data and Grafana-style line graphs.
+
+**What it demonstrates:**
+- Fake data generation (3 temperature sensors, 15min intervals, 1 week)
+- Realistic daily patterns (occupied/unoccupied periods)
+- Grafana-style dark theme with smooth line graphs
+- Multiple visualization types (overlay, stacked panels, pattern analysis)
+- Interactive features (zoom, pan, export)
+
+**Run it:**
+```bash
+python generate_fake_timeseries.py  # Creates fake_timeseries_data.json
+python visualize_timeseries.py       # Creates 4 interactive HTML dashboards
+```
+
+**Generated dashboards:**
+- `timeseries_01_all_zones.html` - All 3 zones overlaid
+- `timeseries_02_separate_panels.html` - Stacked panels per zone
+- `timeseries_03_weekly_patterns.html` - Hourly patterns by day
+- `timeseries_04_monday_detail.html` - Single day with occupied hours highlighted
+
 #### `example_ingestion.py` - Full Platform
 
 Complete example with InfluxDB time-series database.
@@ -313,7 +336,7 @@ fig.show()
 - [ ] Implement trifurcation (logical analysis)
 - [ ] Validate against re:sustain's manual mappings
 
-### Phase 4: PhD Deliverables (Year 1-3)
+### Phase 4: PhD Deliverables (Jun 2026 - 2029)
 
 - [ ] Automated point identification system
 - [ ] Digital twin calibration automation
@@ -350,12 +373,12 @@ When you meet, ask:
 
 ## Cost Estimate
 
-### Development Phase (Now - Sep 2025)
+### Development Phase (Now - Jun 2026)
 - **Infrastructure:** £0 (local Docker)
 - **Tools:** £0 (all open-source)
 - **Total:** £0/month
 
-### Production Phase (Sep 2025+)
+### Production Phase (Jun 2026+)
 - **VPS** (Hetzner 8GB): £8/month
 - **Domain + SSL:** £2/month
 - **Backups:** Included

@@ -71,3 +71,7 @@ R&D Email Thread*.pdf
 # Reference materials (keep local, don't commit)
 re.sustain/
 Plotly Cufflinks/
+Grafana*.png
+
+# Helper scripts (local only)
+create-github-repo.ps1
