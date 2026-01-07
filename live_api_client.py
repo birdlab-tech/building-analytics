@@ -161,6 +161,10 @@ class BMSAPIClient:
         Converts: "Wed Jan  7 14:45:53 2026 UTC"
         To:       "2026-01-07T14:45:53.000Z"
         """
+        # If timestamp is empty or None, use current time silently
+        if not timestamp_str or timestamp_str.strip() == "":
+            return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
         try:
             # Parse the timestamp
             dt = datetime.strptime(timestamp_str, "%a %b %d %H:%M:%S %Y %Z")
@@ -169,6 +173,7 @@ class BMSAPIClient:
             return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
         except Exception as e:
+            # Only print warning for non-empty timestamps that fail to parse
             print(f"Warning: Could not parse timestamp '{timestamp_str}': {e}")
             # Fallback to current time
             return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.000Z")
