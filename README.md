@@ -11,6 +11,27 @@ This is your independent platform for building analytics research. It's designed
 3. **Save Money** - 80-95% cheaper than AWS alternatives
 4. **Maximize Flexibility** - Plotly > Grafana for research and analysis
 
+## 🔴 NEW: Live API Integration
+
+**You can now connect to Dan's live BMS REST API!**
+
+Three new scripts are available:
+- **`live_api_client.py`** - Fetch real-time data from the API
+- **`live_ingestion.py`** - Continuous polling and storage to InfluxDB
+- **`live_dashboard.py`** - Real-time auto-refreshing web dashboard
+
+📖 **[Read the full setup guide: LIVE_API_SETUP.md](LIVE_API_SETUP.md)**
+
+### Quick Demo
+
+Launch the live dashboard (updates every 15 seconds):
+
+```bash
+pip install dash
+python live_dashboard.py
+# Open browser to: http://localhost:8050
+```
+
 ## Quick Start (No Installation Required!)
 
 ### Try It Now: Instant Visualization

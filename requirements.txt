@@ -1,0 +1,17 @@
+# Core Dependencies
+pandas>=2.0.0
+plotly>=5.14.0
+requests>=2.31.0
+urllib3>=2.0.0
+
+# Time-Series Database
+influxdb-client>=1.36.0
+
+# Real-Time Dashboard
+dash>=2.14.0
+dash-core-components>=2.0.0
+dash-html-components>=2.0.0
+
+# Optional (for enhanced functionality)
+scipy>=1.10.0
+numpy>=1.24.0
