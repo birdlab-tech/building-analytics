@@ -125,7 +125,12 @@ def apply_targets(points, target_rows):
 # APP SETUP
 # =============================================================================
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
+app = dash.Dash(
+    __name__,
+    external_stylesheets=[dbc.themes.DARKLY],
+    url_base_pathname='/filter/',
+    requests_pathname_prefix='/filter/'
+)
 app.title = "Point Filtering"
 
 # Store for maintaining filter state
