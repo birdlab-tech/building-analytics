@@ -53,17 +53,18 @@ app = dash.Dash(__name__)
 app.title = "Live BMS Time-Series"
 
 # Add custom CSS to remove white borders and set black background
+# CRITICAL: inline styles on body tag so background is dark BEFORE CSS loads
 app.index_string = '''
 <!DOCTYPE html>
-<html>
+<html style="background-color: #000000;">
     <head>
         {%metas%}
         <title>{%title%}</title>
         {%favicon%}
-        {%css%}
         <style>
-            body {
-                background-color: #000000;
+            /* Set background BEFORE any other CSS loads */
+            html, body {
+                background-color: #000000 !important;
                 margin: 0;
                 padding: 0;
                 overflow: hidden;
@@ -81,12 +82,13 @@ app.index_string = '''
                 background-color: #2D2D2D !important;
             }
             /* Ensure the entire dash app container is dark */
-            #react-entry-point, ._dash-loading {
+            #react-entry-point, ._dash-loading, #_dash-app-content {
                 background-color: #000000 !important;
             }
         </style>
+        {%css%}
     </head>
-    <body>
+    <body style="background-color: #000000; margin: 0; padding: 0; overflow: hidden;">
         {%app_entry%}
         <footer>
             {%config%}
