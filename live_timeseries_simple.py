@@ -121,6 +121,41 @@ app.layout = html.Div([
             'fontSize': '12px',
             'flex': '1'  # Take remaining space
         }),
+        # Y-axis controls
+        html.Div([
+            html.Span("Y-Min:", style={'color': '#888', 'fontSize': '11px', 'marginRight': '5px'}),
+            dcc.Input(
+                id='y-min',
+                type='number',
+                placeholder='Auto',
+                style={
+                    'width': '70px',
+                    'padding': '2px 5px',
+                    'fontSize': '11px',
+                    'background': '#2d2d2d',
+                    'border': '1px solid #444',
+                    'borderRadius': '3px',
+                    'color': '#e0e0e0',
+                    'marginRight': '10px'
+                }
+            ),
+            html.Span("Y-Max:", style={'color': '#888', 'fontSize': '11px', 'marginRight': '5px'}),
+            dcc.Input(
+                id='y-max',
+                type='number',
+                placeholder='Auto',
+                style={
+                    'width': '70px',
+                    'padding': '2px 5px',
+                    'fontSize': '11px',
+                    'background': '#2d2d2d',
+                    'border': '1px solid #444',
+                    'borderRadius': '3px',
+                    'color': '#e0e0e0',
+                    'marginRight': '15px'
+                }
+            )
+        ], style={'display': 'flex', 'alignItems': 'center'}),
         html.A("🔍 Filter Points", href="/filter/", target="_blank", style={
             'color': '#00aaff',
             'fontSize': '14px',
@@ -273,9 +308,11 @@ def fetch_data_from_influxdb():
 @app.callback(
     [Output('status', 'children'),
      Output('main-timeseries', 'figure')],
-    [Input('interval', 'n_intervals')]
+    [Input('interval', 'n_intervals'),
+     Input('y-min', 'value'),
+     Input('y-max', 'value')]
 )
-def update_graph(n):
+def update_graph(n, y_min, y_max):
     """Update the main graph"""
 
     # Fetch data from InfluxDB
@@ -379,7 +416,7 @@ def update_graph(n):
             )
         ),
 
-        # Y-axis - auto-scale based on visible data
+        # Y-axis - auto-scale or fixed based on user inputs
         yaxis=dict(
             title=dict(text='Value', font=dict(size=12)),
             gridcolor='#333333',  # Medium gray grid (matches visualize_timeseries.py)
@@ -387,7 +424,8 @@ def update_graph(n):
             zeroline=False,
             color='#E0E0E0',
             fixedrange=False,  # Allow auto-scaling
-            autorange=True  # Auto-fit to data
+            autorange=True if (y_min is None and y_max is None) else False,  # Auto-fit if no limits set
+            range=[y_min, y_max] if (y_min is not None or y_max is not None) else None  # Use limits if set
         ),
 
         # Legend - on the right side, vertical, limited width
