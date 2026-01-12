@@ -527,7 +527,7 @@ def list_saved_configs(refresh_clicks, save_clicks):
                     configs.append(
                         dbc.ButtonGroup([
                             dbc.Button(
-                                f"📁 {config_name} ({num_blockers}B/{num_targets}T)",
+                                f"📁 {config_name}",
                                 id={'type': 'load-config', 'index': config_name},
                                 color="light",
                                 size="sm",
@@ -593,7 +593,7 @@ def load_configuration(n_clicks, ids):
                 dbc.InputGroupText([
                     dbc.Checkbox(
                         id={'type': 'blocker-invert', 'index': i},
-                        checked=blocker['invert'],
+                        value=blocker['invert'],
                         className="me-1"
                     ),
                     html.Small("Invert", style={'fontSize': '10px'})
@@ -625,7 +625,7 @@ def load_configuration(n_clicks, ids):
                 dbc.InputGroupText([
                     dbc.Checkbox(
                         id={'type': 'target-invert', 'index': i},
-                        checked=target['invert'],
+                        value=target['invert'],
                         className="me-1"
                     ),
                     html.Small("Invert", style={'fontSize': '10px'})
@@ -680,13 +680,11 @@ def delete_configuration(n_clicks, ids):
                         config_data = json.load(f)
 
                     name = filename[:-5]
-                    num_blockers = len(config_data.get('blockers', []))
-                    num_targets = len(config_data.get('targets', []))
 
                     configs.append(
                         dbc.ButtonGroup([
                             dbc.Button(
-                                f"📁 {name} ({num_blockers}B/{num_targets}T)",
+                                f"📁 {name}",
                                 id={'type': 'load-config', 'index': name},
                                 color="light",
                                 size="sm",
