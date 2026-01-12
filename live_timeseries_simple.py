@@ -210,8 +210,8 @@ def update_graph(n):
 
     # Status text
     unique_points = df['sensor'].nunique() if not df.empty else 0
-    total_points = len(df)
-    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_points} points | {total_points} datapoints ({TIME_WINDOW}h window)"
+    total_datapoints = len(df)
+    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_points} points | {total_datapoints} polls ({TIME_WINDOW}h window)"
 
     # Create figure
     fig = go.Figure()

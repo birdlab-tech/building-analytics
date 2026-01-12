@@ -1,0 +1,2 @@
+ssh digitalocean
+screen -r bms-setup
