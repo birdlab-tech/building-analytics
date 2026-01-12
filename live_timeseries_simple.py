@@ -52,6 +52,10 @@ influx_client = InfluxDBClient(
 app = dash.Dash(__name__)
 app.title = "Live BMS Time-Series"
 
+# Set default Plotly template to dark (prevents white background during loading)
+import plotly.io as pio
+pio.templates.default = "plotly_dark"
+
 # Add custom CSS to remove white borders and set black background
 # CRITICAL: inline styles on body tag so background is dark BEFORE CSS loads
 app.index_string = '''
@@ -129,12 +133,23 @@ app.layout = html.Div([
         id='main-timeseries',
         style={
             'height': 'calc(100vh - 42px)',  # Full height minus header
-            'width': '100%'
+            'width': '100%',
+            'backgroundColor': '#2D2D2D'
         },
         config={
             'displayModeBar': True,
             'displaylogo': False,
             'modeBarButtonsToRemove': ['select2d', 'lasso2d']
+        },
+        figure={
+            'data': [],
+            'layout': {
+                'paper_bgcolor': '#2D2D2D',
+                'plot_bgcolor': '#1E1E1E',
+                'xaxis': {'visible': False},
+                'yaxis': {'visible': False},
+                'margin': {'l': 0, 'r': 0, 't': 0, 'b': 0}
+            }
         }
     ),
 
