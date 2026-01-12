@@ -381,6 +381,11 @@ def clear_all_filters(n):
 )
 def apply_filters_to_dashboard(n_clicks, all_points, blocker_patterns, blocker_inverts, target_patterns, target_inverts):
     """Save filtered points to file for dashboard to read"""
+    print(f"Apply callback triggered! n_clicks={n_clicks}")
+    print(f"Points available: {len(all_points) if all_points else 0}")
+    print(f"Blocker patterns: {blocker_patterns}")
+    print(f"Target patterns: {target_patterns}")
+
     if not all_points:
         return "⚠️ No points loaded"
 
@@ -396,9 +401,13 @@ def apply_filters_to_dashboard(n_clicks, all_points, blocker_patterns, blocker_i
         invert = target_inverts[i] if i < len(target_inverts) else False
         targets.append({'pattern': pattern or '', 'invert': bool(invert)})
 
+    print(f"Applying filters: {len(blockers)} blockers, {len(targets)} targets")
+
     # Apply filters
     filtered = apply_blockers(all_points, blockers)
+    print(f"After blockers: {len(filtered)} points")
     filtered = apply_targets(filtered, targets)
+    print(f"After targets: {len(filtered)} points")
 
     # Save to file
     filter_file = '/tmp/bms_filter_active.json'
@@ -409,8 +418,10 @@ def apply_filters_to_dashboard(n_clicks, all_points, blocker_patterns, blocker_i
                 'timestamp': datetime.now().isoformat(),
                 'count': len(filtered)
             }, f)
+        print(f"✅ Saved {len(filtered)} points to {filter_file}")
         return f"✅ Applied {len(filtered)} points to dashboard"
     except Exception as e:
+        print(f"❌ Error saving filter: {e}")
         return f"❌ Error: {str(e)}"
 
 # =============================================================================
