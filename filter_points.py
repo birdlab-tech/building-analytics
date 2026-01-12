@@ -81,7 +81,7 @@ def match_wildcard(point_name, pattern, invert=False):
 def apply_blockers(points, blocker_rows):
     """
     Apply blocker filters (AND logic - all must pass).
-    A point passes if it matches ALL blockers.
+    A point passes if it does NOT match the blocker (i.e., blockers REMOVE matching points).
     """
     filtered = points.copy()
 
@@ -90,7 +90,8 @@ def apply_blockers(points, blocker_rows):
         invert = blocker.get('invert', False)
 
         if pattern:  # Only apply non-empty patterns
-            filtered = [p for p in filtered if match_wildcard(p, pattern, invert)]
+            # Remove points that match the blocker (keep points that DON'T match)
+            filtered = [p for p in filtered if not match_wildcard(p, pattern, invert)]
 
     return filtered
 
@@ -141,7 +142,10 @@ app.layout = dbc.Container([
         # Column 1: Unfiltered Points
         dbc.Col([
             html.Div([
-                html.H5("Unfiltered Points", className="text-center bg-secondary p-2 mb-0"),
+                html.H5([
+                    "Unfiltered Points ",
+                    html.Span(id='unfiltered-count', className="badge bg-info")
+                ], className="text-center bg-secondary p-2 mb-0"),
                 html.Div(id='unfiltered-list', className="point-list", style={
                     'height': '70vh',
                     'overflowY': 'auto',
@@ -253,15 +257,16 @@ def refresh_point_list(n):
     return points, f"Updated: {timestamp}"
 
 @app.callback(
-    Output('unfiltered-list', 'children'),
+    [Output('unfiltered-list', 'children'),
+     Output('unfiltered-count', 'children')],
     [Input('all-points', 'data')]
 )
 def display_unfiltered_points(points):
     """Display all unfiltered points"""
     if not points:
-        return html.Div("No points found", className="text-muted")
+        return html.Div("No points found", className="text-muted"), "0"
 
-    return [html.Div(point, className="mb-1") for point in points]
+    return [html.Div(point, className="mb-1") for point in points], str(len(points))
 
 @app.callback(
     [Output('blocker-rows', 'children'),
