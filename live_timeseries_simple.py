@@ -81,7 +81,7 @@ app.index_string = '''
 # =============================================================================
 
 app.layout = html.Div([
-    # Compact header - title, status, and label toggle on one line
+    # Compact header - title and status
     html.Div([
         html.Span("🔴 LIVE BMS Time-Series", style={
             'color': '#00aaff',
@@ -91,24 +91,8 @@ app.layout = html.Div([
         }),
         html.Span(id='status', style={
             'color': '#888',
-            'fontSize': '12px',
-            'marginRight': '20px'
-        }),
-        html.Button(
-            'Show Full Labels',
-            id='label-toggle',
-            n_clicks=0,
-            style={
-                'background': '#333',
-                'color': '#e0e0e0',
-                'border': '1px solid #555',
-                'padding': '4px 12px',
-                'borderRadius': '4px',
-                'fontSize': '11px',
-                'cursor': 'pointer',
-                'marginLeft': 'auto'
-            }
-        )
+            'fontSize': '12px'
+        })
     ], style={
         'background': '#1a1a1a',
         'padding': '8px 15px',
@@ -215,24 +199,19 @@ def fetch_data_from_influxdb():
 
 @app.callback(
     [Output('status', 'children'),
-     Output('main-timeseries', 'figure'),
-     Output('label-toggle', 'children')],
-    [Input('interval', 'n_intervals'),
-     Input('label-toggle', 'n_clicks')]
+     Output('main-timeseries', 'figure')],
+    [Input('interval', 'n_intervals')]
 )
-def update_graph(n, toggle_clicks):
+def update_graph(n):
     """Update the main graph"""
-
-    # Determine if we should show full labels based on toggle clicks
-    show_full_labels = (toggle_clicks % 2) == 1  # Odd clicks = full labels
 
     # Fetch data from InfluxDB
     df, timestamp = fetch_data_from_influxdb()
 
     # Status text
-    unique_sensors = df['sensor'].nunique() if not df.empty else 0
+    unique_points = df['sensor'].nunique() if not df.empty else 0
     total_points = len(df)
-    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_sensors} sensors | {total_points} points ({TIME_WINDOW}h window)"
+    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_points} points | {total_points} datapoints ({TIME_WINDOW}h window)"
 
     # Create figure
     fig = go.Figure()
@@ -241,20 +220,11 @@ def update_graph(n, toggle_clicks):
     colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181',
               '#AA96DA', '#FCBAD3', '#A8D8EA', '#FF8B94', '#C7CEEA']
 
-    # Function to get display label based on toggle state
-    def get_display_label(label):
-        if show_full_labels:
-            return label  # Show full label with L11OS11D1_ prefix
-        else:
-            # Shorten label - remove prefix
-            return label.split('_', 3)[-1] if label.count('_') >= 3 else label
-
     # Natural sort key function - handles numbers properly (D1, D2, D3... not D1, D21, D22, D2, D3)
     import re
     def natural_sort_key(label):
-        display_label = get_display_label(label)
         # Split into text and number parts
-        parts = re.split(r'(\d+)', display_label)
+        parts = re.split(r'(\d+)', label)
         # Convert numeric parts to integers for proper sorting
         return [int(part) if part.isdigit() else part.lower() for part in parts]
 
@@ -273,13 +243,10 @@ def update_graph(n, toggle_clicks):
         for sensor in sorted_sensors:
             sensor_df = sensors_data[sensor]
 
-            # Get display label based on current toggle state
-            display_label = get_display_label(sensor)
-
             fig.add_trace(go.Scatter(
                 x=sensor_df['time'],
                 y=sensor_df['value'],
-                name=display_label,
+                name=sensor,  # Always show full sensor name
                 mode='lines',
                 line=dict(
                     color=colors[color_idx % len(colors)],
@@ -300,6 +267,9 @@ def update_graph(n, toggle_clicks):
         plot_bgcolor='#1E1E1E',  # Dark gray for plot area (matches visualize_timeseries.py)
         paper_bgcolor='#2D2D2D',  # Slightly lighter gray for figure (matches visualize_timeseries.py)
         font=dict(color='#e0e0e0', size=11),
+
+        # Preserve user interactions (zoom, pan, legend selections) across updates
+        uirevision='constant',
 
         # X-axis - fixed range controls
         xaxis=dict(
@@ -358,8 +328,8 @@ def update_graph(n, toggle_clicks):
             groupclick='toggleitem'
         ),
 
-        # Hover settings
-        hovermode='x unified',
+        # Hover settings - closest point only (less sticky)
+        hovermode='closest',
         hoverlabel=dict(
             bgcolor='#1a1a1a',
             font_size=11
@@ -397,10 +367,7 @@ def update_graph(n, toggle_clicks):
         ]
     )
 
-    # Update toggle button text
-    toggle_button_text = 'Show Short Labels' if show_full_labels else 'Show Full Labels'
-
-    return status, fig, toggle_button_text
+    return status, fig
 
 # =============================================================================
 # RUN
