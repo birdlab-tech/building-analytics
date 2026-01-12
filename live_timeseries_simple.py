@@ -332,8 +332,7 @@ def update_graph(n, toggle_clicks):
 
         # Y-axis - auto-scale based on visible data
         yaxis=dict(
-            title='Value',
-            titlefont=dict(size=12),
+            title=dict(text='Value', font=dict(size=12)),
             gridcolor='#333333',  # Medium gray grid (matches visualize_timeseries.py)
             showgrid=True,
             zeroline=False,
