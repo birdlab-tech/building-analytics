@@ -68,6 +68,13 @@ app.index_string = '''
                 padding: 0;
                 overflow: hidden;
             }
+            /* Make graph container grey during loading to match final state */
+            #main-timeseries {
+                background-color: #2D2D2D !important;
+            }
+            .js-plotly-plot, .plotly {
+                background-color: #2D2D2D !important;
+            }
         </style>
     </head>
     <body>
