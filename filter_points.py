@@ -315,6 +315,10 @@ def manage_blocker_rows(add_clicks, remove_clicks, current_rows, counter):
     """Add or remove blocker rows"""
     triggered_id = ctx.triggered_id
 
+    # Only proceed if something was actually clicked
+    if not triggered_id:
+        raise dash.exceptions.PreventUpdate
+
     if triggered_id == 'add-blocker':
         new_row = create_filter_row(counter, 'blocker')
         current_rows = current_rows or []
@@ -327,7 +331,8 @@ def manage_blocker_rows(add_clicks, remove_clicks, current_rows, counter):
                        if row['props']['children'][2]['props']['id']['index'] != index_to_remove]
         return current_rows, counter
 
-    return current_rows or [create_filter_row(0, 'blocker')], counter
+    # If we get here, something unexpected triggered this callback
+    raise dash.exceptions.PreventUpdate
 
 @app.callback(
     [Output('target-rows', 'children'),
@@ -342,6 +347,10 @@ def manage_target_rows(add_clicks, remove_clicks, current_rows, counter):
     """Add or remove target rows"""
     triggered_id = ctx.triggered_id
 
+    # Only proceed if something was actually clicked
+    if not triggered_id:
+        raise dash.exceptions.PreventUpdate
+
     if triggered_id == 'add-target':
         new_row = create_filter_row(counter, 'target')
         current_rows = current_rows or []
@@ -354,7 +363,8 @@ def manage_target_rows(add_clicks, remove_clicks, current_rows, counter):
                        if row['props']['children'][2]['props']['id']['index'] != index_to_remove]
         return current_rows, counter
 
-    return current_rows or [create_filter_row(0, 'target')], counter
+    # If we get here, something unexpected triggered this callback
+    raise dash.exceptions.PreventUpdate
 
 @app.callback(
     [Output('filtered-list', 'children'),
@@ -393,13 +403,15 @@ def apply_filters(all_points, blocker_patterns, blocker_inverts, target_patterns
 
 @app.callback(
     [Output('blocker-rows', 'children', allow_duplicate=True),
-     Output('target-rows', 'children', allow_duplicate=True)],
+     Output('target-rows', 'children', allow_duplicate=True),
+     Output('blocker-counter', 'data', allow_duplicate=True),
+     Output('target-counter', 'data', allow_duplicate=True)],
     [Input('clear-filters', 'n_clicks')],
     prevent_initial_call=True
 )
 def clear_all_filters(n):
     """Clear all blocker and target filters"""
-    return [create_filter_row(0, 'blocker')], [create_filter_row(0, 'target')]
+    return [create_filter_row(0, 'blocker')], [create_filter_row(0, 'target')], 1, 1
 
 @app.callback(
     Output('apply-status', 'children'),
