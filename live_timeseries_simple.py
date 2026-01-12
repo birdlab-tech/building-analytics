@@ -71,9 +71,18 @@ app.index_string = '''
             /* Make graph container grey during loading to match final state */
             #main-timeseries {
                 background-color: #2D2D2D !important;
+                min-height: calc(100vh - 42px);
             }
-            .js-plotly-plot, .plotly {
+            .js-plotly-plot, .plotly, .plot-container, .svg-container {
                 background-color: #2D2D2D !important;
+            }
+            /* Override any white backgrounds from Plotly during loading */
+            div[data-dash-is-loading="true"] {
+                background-color: #2D2D2D !important;
+            }
+            /* Ensure the entire dash app container is dark */
+            #react-entry-point, ._dash-loading {
+                background-color: #000000 !important;
             }
         </style>
     </head>

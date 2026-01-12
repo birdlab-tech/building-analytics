@@ -405,13 +405,17 @@ def apply_filters(all_points, blocker_patterns, blocker_inverts, target_patterns
     [Output('blocker-rows', 'children', allow_duplicate=True),
      Output('target-rows', 'children', allow_duplicate=True),
      Output('blocker-counter', 'data', allow_duplicate=True),
-     Output('target-counter', 'data', allow_duplicate=True)],
+     Output('target-counter', 'data', allow_duplicate=True),
+     Output({'type': 'blocker-pattern', 'index': ALL}, 'value', allow_duplicate=True),
+     Output({'type': 'blocker-invert', 'index': ALL}, 'value', allow_duplicate=True),
+     Output({'type': 'target-pattern', 'index': ALL}, 'value', allow_duplicate=True),
+     Output({'type': 'target-invert', 'index': ALL}, 'value', allow_duplicate=True)],
     [Input('clear-filters', 'n_clicks')],
     prevent_initial_call=True
 )
 def clear_all_filters(n):
     """Clear all blocker and target filters"""
-    return [create_filter_row(0, 'blocker')], [create_filter_row(0, 'target')], 1, 1
+    return [create_filter_row(0, 'blocker')], [create_filter_row(0, 'target')], 1, 1, [''], [False], [''], [False]
 
 @app.callback(
     Output('apply-status', 'children'),
@@ -571,7 +575,11 @@ def list_saved_configs(refresh_clicks, save_clicks):
      Output('target-rows', 'children', allow_duplicate=True),
      Output('blocker-counter', 'data', allow_duplicate=True),
      Output('target-counter', 'data', allow_duplicate=True),
-     Output('save-status', 'children', allow_duplicate=True)],
+     Output('save-status', 'children', allow_duplicate=True),
+     Output({'type': 'blocker-pattern', 'index': ALL}, 'value', allow_duplicate=True),
+     Output({'type': 'blocker-invert', 'index': ALL}, 'value', allow_duplicate=True),
+     Output({'type': 'target-pattern', 'index': ALL}, 'value', allow_duplicate=True),
+     Output({'type': 'target-invert', 'index': ALL}, 'value', allow_duplicate=True)],
     [Input({'type': 'load-config', 'index': ALL}, 'n_clicks')],
     [State({'type': 'load-config', 'index': ALL}, 'id')],
     prevent_initial_call=True
@@ -665,15 +673,25 @@ def load_configuration(n_clicks, ids):
         blocker_counter = len(blocker_rows)
         target_counter = len(target_rows)
 
-        print(f"  Created {len(blocker_rows)} blocker rows, {len(target_rows)} target rows")
+        # Extract values to explicitly set in the inputs
+        blocker_patterns = [b['pattern'] for b in config_data.get('blockers', [])]
+        blocker_inverts = [b['invert'] for b in config_data.get('blockers', [])]
+        target_patterns = [t['pattern'] for t in config_data.get('targets', [])]
+        target_inverts = [t['invert'] for t in config_data.get('targets', [])]
 
-        return blocker_rows, target_rows, blocker_counter, target_counter, f"✅ Loaded '{config_name}'"
+        print(f"  Created {len(blocker_rows)} blocker rows, {len(target_rows)} target rows")
+        print(f"  Setting blocker patterns: {blocker_patterns}")
+        print(f"  Setting target patterns: {target_patterns}")
+
+        return (blocker_rows, target_rows, blocker_counter, target_counter, f"✅ Loaded '{config_name}'",
+                blocker_patterns, blocker_inverts, target_patterns, target_inverts)
 
     except Exception as e:
         print(f"Error loading config: {e}")
         import traceback
         traceback.print_exc()
-        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, f"❌ Error loading: {str(e)}"
+        return (dash.no_update, dash.no_update, dash.no_update, dash.no_update, f"❌ Error loading: {str(e)}",
+                dash.no_update, dash.no_update, dash.no_update, dash.no_update)
 
 @app.callback(
     [Output('saved-configs-list', 'children', allow_duplicate=True),
