@@ -128,8 +128,7 @@ def apply_targets(points, target_rows):
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.DARKLY],
-    url_base_pathname='/filter/',
-    requests_pathname_prefix='/filter/'
+    url_base_pathname='/filter/'
 )
 app.title = "Point Filtering"
 
