@@ -118,7 +118,18 @@ app.layout = html.Div([
         }),
         html.Span(id='status', style={
             'color': '#888',
-            'fontSize': '12px'
+            'fontSize': '12px',
+            'flex': '1'  # Take remaining space
+        }),
+        html.A("🔍 Filter Points", href="/filter/", target="_blank", style={
+            'color': '#00aaff',
+            'fontSize': '14px',
+            'textDecoration': 'none',
+            'padding': '4px 12px',
+            'border': '1px solid #00aaff',
+            'borderRadius': '4px',
+            'marginLeft': '15px',
+            'transition': 'background-color 0.2s'
         })
     ], style={
         'background': '#1a1a1a',
