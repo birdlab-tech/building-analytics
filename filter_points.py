@@ -557,6 +557,8 @@ def list_saved_configs(refresh_clicks, save_clicks):
 @app.callback(
     [Output('blocker-rows', 'children', allow_duplicate=True),
      Output('target-rows', 'children', allow_duplicate=True),
+     Output('blocker-counter', 'data', allow_duplicate=True),
+     Output('target-counter', 'data', allow_duplicate=True),
      Output('save-status', 'children', allow_duplicate=True)],
     [Input({'type': 'load-config', 'index': ALL}, 'n_clicks')],
     [State({'type': 'load-config', 'index': ALL}, 'id')],
@@ -578,6 +580,10 @@ def load_configuration(n_clicks, ids):
     try:
         with open(config_file, 'r') as f:
             config_data = json.load(f)
+
+        print(f"Loading config '{config_name}':")
+        print(f"  Blockers: {config_data.get('blockers', [])}")
+        print(f"  Targets: {config_data.get('targets', [])}")
 
         # Rebuild blocker rows
         blocker_rows = []
@@ -643,10 +649,19 @@ def load_configuration(n_clicks, ids):
         if not target_rows:
             target_rows = [create_filter_row(0, 'target')]
 
-        return blocker_rows, target_rows, f"✅ Loaded '{config_name}'"
+        # Update counters to next available index
+        blocker_counter = len(blocker_rows)
+        target_counter = len(target_rows)
+
+        print(f"  Created {len(blocker_rows)} blocker rows, {len(target_rows)} target rows")
+
+        return blocker_rows, target_rows, blocker_counter, target_counter, f"✅ Loaded '{config_name}'"
 
     except Exception as e:
-        return dash.no_update, dash.no_update, f"❌ Error loading: {str(e)}"
+        print(f"Error loading config: {e}")
+        import traceback
+        traceback.print_exc()
+        return dash.no_update, dash.no_update, dash.no_update, dash.no_update, f"❌ Error loading: {str(e)}"
 
 @app.callback(
     [Output('saved-configs-list', 'children', allow_duplicate=True),
