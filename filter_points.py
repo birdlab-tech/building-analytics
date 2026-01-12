@@ -205,6 +205,8 @@ app.layout = dbc.Container([
         dbc.Col([
             dbc.Button("🔄 Refresh Points", id='refresh-points', color="primary", className="me-2"),
             dbc.Button("🧹 Clear All Filters", id='clear-filters', color="warning", className="me-2"),
+            dbc.Button("✅ Apply to Dashboard", id='apply-to-dashboard', color="success", className="me-2"),
+            html.Span(id='apply-status', className="text-muted ms-3"),
             html.Span(id='last-update', className="text-muted ms-3")
         ], className="mt-3")
     ])
@@ -366,6 +368,50 @@ def apply_filters(all_points, blocker_patterns, blocker_inverts, target_patterns
 def clear_all_filters(n):
     """Clear all blocker and target filters"""
     return [create_filter_row(0, 'blocker')], [create_filter_row(0, 'target')]
+
+@app.callback(
+    Output('apply-status', 'children'),
+    [Input('apply-to-dashboard', 'n_clicks')],
+    [State('all-points', 'data'),
+     State({'type': 'blocker-pattern', 'index': ALL}, 'value'),
+     State({'type': 'blocker-invert', 'index': ALL}, 'value'),
+     State({'type': 'target-pattern', 'index': ALL}, 'value'),
+     State({'type': 'target-invert', 'index': ALL}, 'value')],
+    prevent_initial_call=True
+)
+def apply_filters_to_dashboard(n_clicks, all_points, blocker_patterns, blocker_inverts, target_patterns, target_inverts):
+    """Save filtered points to file for dashboard to read"""
+    if not all_points:
+        return "⚠️ No points loaded"
+
+    # Build blocker list
+    blockers = []
+    for i, pattern in enumerate(blocker_patterns):
+        invert = blocker_inverts[i] if i < len(blocker_inverts) else False
+        blockers.append({'pattern': pattern or '', 'invert': bool(invert)})
+
+    # Build target list
+    targets = []
+    for i, pattern in enumerate(target_patterns):
+        invert = target_inverts[i] if i < len(target_inverts) else False
+        targets.append({'pattern': pattern or '', 'invert': bool(invert)})
+
+    # Apply filters
+    filtered = apply_blockers(all_points, blockers)
+    filtered = apply_targets(filtered, targets)
+
+    # Save to file
+    filter_file = '/tmp/bms_filter_active.json'
+    try:
+        with open(filter_file, 'w') as f:
+            json.dump({
+                'points': filtered,
+                'timestamp': datetime.now().isoformat(),
+                'count': len(filtered)
+            }, f)
+        return f"✅ Applied {len(filtered)} points to dashboard"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
 
 # =============================================================================
 # RUN

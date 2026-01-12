@@ -15,6 +15,8 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime, timedelta
 from influxdb_client import InfluxDBClient
+import json
+import os
 
 # =============================================================================
 # CONFIGURATION
@@ -33,6 +35,9 @@ TIME_WINDOW = 24  # Hours of data to display (can show more since it's from data
 # Filter which points to track (to reduce clutter)
 # Options: 'all', 'pumps', 'valves', 'ahu', 'temp'
 TRACK_FILTER = 'all'
+
+# Filter file path (set by filter interface)
+FILTER_FILE = '/tmp/bms_filter_active.json'
 
 influx_client = InfluxDBClient(
     url=INFLUXDB_CONFIG['url'],
@@ -152,9 +157,24 @@ def should_track_point(label):
 
     return True
 
+def load_active_filter():
+    """Load active filter from file if it exists"""
+    try:
+        if os.path.exists(FILTER_FILE):
+            with open(FILTER_FILE, 'r') as f:
+                filter_data = json.load(f)
+                return filter_data.get('points', [])
+        return None
+    except Exception as e:
+        print(f"Error loading filter: {e}")
+        return None
+
 def fetch_data_from_influxdb():
     """Fetch data from InfluxDB for the specified time window"""
     try:
+        # Load active filter from file
+        active_filter = load_active_filter()
+
         query_api = influx_client.query_api()
 
         # Query last TIME_WINDOW hours of data for Sackville building
@@ -176,8 +196,17 @@ def fetch_data_from_influxdb():
                 value = record.get_value()
                 time = record.get_time()
 
-                # Apply filter
-                if should_track_point(sensor_name):
+                # Apply active filter if exists, otherwise use track filter
+                if active_filter is not None:
+                    # Use filter from filter interface
+                    if sensor_name in active_filter:
+                        data_points.append({
+                            'sensor': sensor_name,
+                            'value': value,
+                            'time': time
+                        })
+                elif should_track_point(sensor_name):
+                    # Use built-in track filter
                     data_points.append({
                         'sensor': sensor_name,
                         'value': value,
@@ -185,13 +214,13 @@ def fetch_data_from_influxdb():
                     })
 
         df = pd.DataFrame(data_points)
-        return df, datetime.now()
+        return df, datetime.now(), active_filter
 
     except Exception as e:
         print(f"Error fetching from InfluxDB: {e}")
         import traceback
         traceback.print_exc()
-        return pd.DataFrame(), datetime.now()
+        return pd.DataFrame(), datetime.now(), None
 
 # =============================================================================
 # CALLBACK
@@ -206,12 +235,18 @@ def update_graph(n):
     """Update the main graph"""
 
     # Fetch data from InfluxDB
-    df, timestamp = fetch_data_from_influxdb()
+    df, timestamp, active_filter = fetch_data_from_influxdb()
 
     # Status text
     unique_points = df['sensor'].nunique() if not df.empty else 0
     total_datapoints = len(df)
-    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_points} points | {total_datapoints} polls ({TIME_WINDOW}h window)"
+
+    if active_filter is not None:
+        # Show filtered view indicator
+        status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | 🔍 FILTERED: {unique_points} points | {total_datapoints} polls ({TIME_WINDOW}h window)"
+    else:
+        # Show all points
+        status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_points} points | {total_datapoints} polls ({TIME_WINDOW}h window)"
 
     # Create figure
     fig = go.Figure()
