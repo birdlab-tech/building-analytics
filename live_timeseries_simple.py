@@ -29,7 +29,7 @@ INFLUXDB_CONFIG = {
     'bucket': 'bms_data'
 }
 
-REFRESH_INTERVAL = 60000  # 1 minute (reading from local database is fast)
+REFRESH_INTERVAL = 15000  # 15 seconds (fast refresh for filter changes, local DB is fast)
 TIME_WINDOW = 24  # Hours of data to display (can show more since it's from database)
 
 # Filter which points to track (to reduce clutter)
