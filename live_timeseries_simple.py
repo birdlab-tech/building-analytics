@@ -13,28 +13,32 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objects as go
 import pandas as pd
-from datetime import datetime
-from collections import deque
-from live_api_client import BMSAPIClient
+from datetime import datetime, timedelta
+from influxdb_client import InfluxDBClient
 
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
 
-BMS_CONFIG = {
-    'url': 'https://192.168.11.128/rest',
-    'token': '6r1lkFI2qDKrghg0YaeHMZF1Pbtbloji'
+INFLUXDB_CONFIG = {
+    'url': 'http://localhost:8086',
+    'token': 'bms-super-secret-token-change-in-production',
+    'org': 'birdlab',
+    'bucket': 'bms_data'
 }
 
-REFRESH_INTERVAL = 300000  # 5 minutes (safe for real BMS - standard polling interval)
-MAX_HISTORY_POINTS = 1000  # ~3.5 days of history at 5-minute intervals
+REFRESH_INTERVAL = 60000  # 1 minute (reading from local database is fast)
+TIME_WINDOW = 24  # Hours of data to display (can show more since it's from database)
 
-# Filter which points to track (to reduce clutter and network load)
+# Filter which points to track (to reduce clutter)
 # Options: 'all', 'pumps', 'valves', 'ahu', 'temp'
-TRACK_FILTER = 'all'  # Change to 'pumps' or 'valves' to reduce point count
+TRACK_FILTER = 'all'
 
-bms_client = BMSAPIClient(BMS_CONFIG['url'], BMS_CONFIG['token'])
-historical_data = {}
+influx_client = InfluxDBClient(
+    url=INFLUXDB_CONFIG['url'],
+    token=INFLUXDB_CONFIG['token'],
+    org=INFLUXDB_CONFIG['org']
+)
 
 # =============================================================================
 # APP SETUP
@@ -164,34 +168,46 @@ def should_track_point(label):
 
     return True
 
-def fetch_and_store_data():
-    """Fetch current data and add to historical storage"""
+def fetch_data_from_influxdb():
+    """Fetch data from InfluxDB for the specified time window"""
     try:
-        data = bms_client.fetch_and_parse()
-        df = pd.DataFrame(data)
-        df['Value'] = pd.to_numeric(df['Value'], errors='coerce')
+        query_api = influx_client.query_api()
 
-        timestamp = datetime.now()
-        stored_count = 0
+        # Query last TIME_WINDOW hours of data for Sackville building
+        query = f'''
+        from(bucket: "{INFLUXDB_CONFIG['bucket']}")
+          |> range(start: -{TIME_WINDOW}h)
+          |> filter(fn: (r) => r._measurement == "bms_data")
+          |> filter(fn: (r) => r.tenant_id == "sackville")
+          |> filter(fn: (r) => r._field == "value")
+        '''
 
-        for _, row in df.iterrows():
-            label = row['Label']
-            value = row['Value']
+        result = query_api.query(query, org=INFLUXDB_CONFIG['org'])
 
-            # Apply filter
-            if not should_track_point(label):
-                continue
+        # Convert to pandas DataFrame
+        data_points = []
+        for table in result:
+            for record in table.records:
+                sensor_name = record.values.get('sensor_name')
+                value = record.get_value()
+                time = record.get_time()
 
-            if label not in historical_data:
-                historical_data[label] = deque(maxlen=MAX_HISTORY_POINTS)
+                # Apply filter
+                if should_track_point(sensor_name):
+                    data_points.append({
+                        'sensor': sensor_name,
+                        'value': value,
+                        'time': time
+                    })
 
-            historical_data[label].append((timestamp, value))
-            stored_count += 1
+        df = pd.DataFrame(data_points)
+        return df, datetime.now()
 
-        return stored_count, timestamp
     except Exception as e:
-        print(f"Error: {e}")
-        return 0, datetime.now()
+        print(f"Error fetching from InfluxDB: {e}")
+        import traceback
+        traceback.print_exc()
+        return pd.DataFrame(), datetime.now()
 
 # =============================================================================
 # CALLBACK
@@ -210,11 +226,13 @@ def update_graph(n, toggle_clicks):
     # Determine if we should show full labels based on toggle clicks
     show_full_labels = (toggle_clicks % 2) == 1  # Odd clicks = full labels
 
-    # Fetch new data (always runs, including at n=0 which is startup)
-    point_count, timestamp = fetch_and_store_data()
+    # Fetch data from InfluxDB
+    df, timestamp = fetch_data_from_influxdb()
 
     # Status text
-    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {len(historical_data)} sensors | {point_count} points"
+    unique_sensors = df['sensor'].nunique() if not df.empty else 0
+    total_points = len(df)
+    status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_sensors} sensors | {total_points} points ({TIME_WINDOW}h window)"
 
     # Create figure
     fig = go.Figure()
@@ -226,7 +244,7 @@ def update_graph(n, toggle_clicks):
     # Function to get display label based on toggle state
     def get_display_label(label):
         if show_full_labels:
-            return label  # Show full label with L11_O11_D1_ prefix
+            return label  # Show full label with L11OS11D1_ prefix
         else:
             # Shorten label - remove prefix
             return label.split('_', 3)[-1] if label.count('_') >= 3 else label
@@ -240,22 +258,27 @@ def update_graph(n, toggle_clicks):
         # Convert numeric parts to integers for proper sorting
         return [int(part) if part.isdigit() else part.lower() for part in parts]
 
-    # Sort labels with natural sorting by the DISPLAY name
-    sorted_labels = sorted(historical_data.items(), key=lambda x: natural_sort_key(x[0]))
+    # Group data by sensor and sort
+    if not df.empty:
+        sensors_data = {}
+        for sensor in df['sensor'].unique():
+            sensor_df = df[df['sensor'] == sensor].sort_values('time')
+            sensors_data[sensor] = sensor_df
 
-    # Add all sensors with data
-    color_idx = 0
-    for label, data_points in sorted_labels:
-        if len(data_points) > 0:
-            timestamps = [point[0] for point in data_points]
-            values = [point[1] for point in data_points]
+        # Sort sensors by natural order
+        sorted_sensors = sorted(sensors_data.keys(), key=natural_sort_key)
+
+        # Add all sensors with data
+        color_idx = 0
+        for sensor in sorted_sensors:
+            sensor_df = sensors_data[sensor]
 
             # Get display label based on current toggle state
-            display_label = get_display_label(label)
+            display_label = get_display_label(sensor)
 
             fig.add_trace(go.Scatter(
-                x=timestamps,
-                y=values,
+                x=sensor_df['time'],
+                y=sensor_df['value'],
                 name=display_label,
                 mode='lines',
                 line=dict(
@@ -386,11 +409,13 @@ def update_graph(n, toggle_clicks):
 
 if __name__ == '__main__':
     print("="*70)
-    print("LIVE TIME-SERIES DASHBOARD - FULL SCREEN")
+    print("LIVE TIME-SERIES DASHBOARD - INFLUXDB")
     print("="*70)
     print(f"Open: http://localhost:8050")
-    print(f"Refresh: {REFRESH_INTERVAL/1000/60:.0f} minutes | Filter: {TRACK_FILTER}")
-    print("\nFirst poll happens immediately when you open the page!")
+    print(f"Data Source: InfluxDB @ {INFLUXDB_CONFIG['url']}")
+    print(f"Building: Sackville | Time Window: {TIME_WINDOW}h")
+    print(f"Refresh: {REFRESH_INTERVAL/1000:.0f} seconds | Filter: {TRACK_FILTER}")
+    print("\nFirst load happens immediately when you open the page!")
     print("\nTime Range Buttons (top left):")
     print("  - 1h, 3h, 6h, 12h, 1d, 3d, 1w, All")
     print("\nLegend Controls (top center):")
@@ -403,10 +428,10 @@ if __name__ == '__main__':
     print("  - Zoom: Use scroll wheel OR box zoom (toolbar)")
     print("  - Reset: Double-click graph")
     print("  - Y-axis auto-scales to visible data")
-    print("\nNetwork Load:")
-    print(f"  - Polling every {REFRESH_INTERVAL/1000/60:.0f} minutes = VERY SAFE for BMS")
-    print("  - 1 API call per 5 min = minimal impact (~650 points per call)")
-    print("  - Stores up to ~3.5 days of history")
+    print("\nData Collection:")
+    print(f"  - Background collector polls BMS every 5 minutes")
+    print(f"  - Dashboard reads from InfluxDB (fast local queries)")
+    print(f"  - Currently showing last {TIME_WINDOW}h of data")
     print("  - To reduce clutter: change TRACK_FILTER to 'pumps' or 'valves'")
     print("\nPress Ctrl+C to stop")
     print("="*70)
