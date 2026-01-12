@@ -10,6 +10,7 @@ from datetime import datetime
 from influxdb_client import InfluxDBClient
 import fnmatch
 import json
+import os
 
 # =============================================================================
 # CONFIGURATION
@@ -27,6 +28,10 @@ influx_client = InfluxDBClient(
     token=INFLUXDB_CONFIG['token'],
     org=INFLUXDB_CONFIG['org']
 )
+
+# Directory for saved configurations
+CONFIG_DIR = '/tmp/bms_filter_configs'
+os.makedirs(CONFIG_DIR, exist_ok=True)
 
 # =============================================================================
 # DATA FETCHING
@@ -209,7 +214,34 @@ app.layout = dbc.Container([
             html.Span(id='apply-status', className="text-muted ms-3"),
             html.Span(id='last-update', className="text-muted ms-3")
         ], className="mt-3")
-    ])
+    ]),
+
+    # Save/Load Configuration
+    dbc.Row([
+        dbc.Col([
+            html.Hr(className="my-4"),
+            html.H5("💾 Save/Load Filter Configurations", className="mb-3"),
+
+            dbc.Row([
+                # Save section
+                dbc.Col([
+                    html.Label("Save Current Filters:", className="mb-2"),
+                    dbc.InputGroup([
+                        dbc.Input(id='config-name', placeholder="e.g., pumps-only", size="sm"),
+                        dbc.Button("💾 Save", id='save-config', color="info", size="sm")
+                    ], className="mb-2"),
+                    html.Small(id='save-status', className="text-muted")
+                ], width=6),
+
+                # Load section
+                dbc.Col([
+                    html.Label("Saved Configurations:", className="mb-2"),
+                    html.Div(id='saved-configs-list', className="mb-2"),
+                    dbc.Button("🔄 Refresh List", id='refresh-configs', color="secondary", size="sm", outline=True)
+                ], width=6)
+            ])
+        ])
+    ], className="mt-3")
 
 ], fluid=True, style={'backgroundColor': '#222'})
 
@@ -423,6 +455,265 @@ def apply_filters_to_dashboard(n_clicks, all_points, blocker_patterns, blocker_i
     except Exception as e:
         print(f"❌ Error saving filter: {e}")
         return f"❌ Error: {str(e)}"
+
+@app.callback(
+    Output('save-status', 'children'),
+    [Input('save-config', 'n_clicks')],
+    [State('config-name', 'value'),
+     State({'type': 'blocker-pattern', 'index': ALL}, 'value'),
+     State({'type': 'blocker-invert', 'index': ALL}, 'value'),
+     State({'type': 'target-pattern', 'index': ALL}, 'value'),
+     State({'type': 'target-invert', 'index': ALL}, 'value')],
+    prevent_initial_call=True
+)
+def save_configuration(n_clicks, config_name, blocker_patterns, blocker_inverts, target_patterns, target_inverts):
+    """Save current filter configuration to file"""
+    if not config_name or not config_name.strip():
+        return "❌ Please enter a configuration name"
+
+    # Sanitize filename
+    safe_name = "".join(c for c in config_name if c.isalnum() or c in ('-', '_')).strip()
+    if not safe_name:
+        return "❌ Invalid configuration name"
+
+    # Build config
+    config = {
+        'name': config_name,
+        'blockers': [],
+        'targets': [],
+        'created': datetime.now().isoformat()
+    }
+
+    for i, pattern in enumerate(blocker_patterns):
+        if pattern and pattern.strip():
+            invert = blocker_inverts[i] if i < len(blocker_inverts) else False
+            config['blockers'].append({'pattern': pattern, 'invert': bool(invert)})
+
+    for i, pattern in enumerate(target_patterns):
+        if pattern and pattern.strip():
+            invert = target_inverts[i] if i < len(target_inverts) else False
+            config['targets'].append({'pattern': pattern, 'invert': bool(invert)})
+
+    # Save to file
+    config_file = os.path.join(CONFIG_DIR, f'{safe_name}.json')
+    try:
+        with open(config_file, 'w') as f:
+            json.dump(config, f, indent=2)
+        return f"✅ Saved as '{safe_name}'"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
+@app.callback(
+    Output('saved-configs-list', 'children'),
+    [Input('refresh-configs', 'n_clicks'),
+     Input('save-config', 'n_clicks')],
+    prevent_initial_call=False
+)
+def list_saved_configs(refresh_clicks, save_clicks):
+    """List all saved configurations"""
+    try:
+        configs = []
+        for filename in sorted(os.listdir(CONFIG_DIR)):
+            if filename.endswith('.json'):
+                config_path = os.path.join(CONFIG_DIR, filename)
+                try:
+                    with open(config_path, 'r') as f:
+                        config_data = json.load(f)
+
+                    config_name = filename[:-5]  # Remove .json
+                    num_blockers = len(config_data.get('blockers', []))
+                    num_targets = len(config_data.get('targets', []))
+
+                    configs.append(
+                        dbc.ButtonGroup([
+                            dbc.Button(
+                                f"📁 {config_name} ({num_blockers}B/{num_targets}T)",
+                                id={'type': 'load-config', 'index': config_name},
+                                color="light",
+                                size="sm",
+                                outline=True,
+                                className="text-start"
+                            ),
+                            dbc.Button(
+                                "🗑️",
+                                id={'type': 'delete-config', 'index': config_name},
+                                color="danger",
+                                size="sm",
+                                outline=True
+                            )
+                        ], className="mb-1 w-100")
+                    )
+                except:
+                    continue
+
+        if not configs:
+            return html.Small("No saved configurations", className="text-muted")
+
+        return html.Div(configs)
+
+    except Exception as e:
+        return html.Small(f"Error loading configs: {e}", className="text-danger")
+
+@app.callback(
+    [Output('blocker-rows', 'children', allow_duplicate=True),
+     Output('target-rows', 'children', allow_duplicate=True),
+     Output('save-status', 'children', allow_duplicate=True)],
+    [Input({'type': 'load-config', 'index': ALL}, 'n_clicks')],
+    [State({'type': 'load-config', 'index': ALL}, 'id')],
+    prevent_initial_call=True
+)
+def load_configuration(n_clicks, ids):
+    """Load a saved configuration"""
+    if not any(n_clicks):
+        raise dash.exceptions.PreventUpdate
+
+    # Find which button was clicked
+    triggered = ctx.triggered_id
+    if not triggered:
+        raise dash.exceptions.PreventUpdate
+
+    config_name = triggered['index']
+    config_file = os.path.join(CONFIG_DIR, f'{config_name}.json')
+
+    try:
+        with open(config_file, 'r') as f:
+            config_data = json.load(f)
+
+        # Rebuild blocker rows
+        blocker_rows = []
+        for i, blocker in enumerate(config_data.get('blockers', [])):
+            row = dbc.InputGroup([
+                dbc.Input(
+                    id={'type': 'blocker-pattern', 'index': i},
+                    placeholder="e.g., *Pump*",
+                    value=blocker['pattern'],
+                    size="sm",
+                    style={'fontFamily': 'monospace', 'fontSize': '11px'}
+                ),
+                dbc.InputGroupText([
+                    dbc.Checkbox(
+                        id={'type': 'blocker-invert', 'index': i},
+                        checked=blocker['invert'],
+                        className="me-1"
+                    ),
+                    html.Small("Invert", style={'fontSize': '10px'})
+                ], style={'fontSize': '10px'}),
+                dbc.Button(
+                    "×",
+                    id={'type': 'blocker-remove', 'index': i},
+                    color="dark",
+                    size="sm",
+                    style={'fontSize': '14px'}
+                )
+            ], size="sm", className="mb-2")
+            blocker_rows.append(row)
+
+        if not blocker_rows:
+            blocker_rows = [create_filter_row(0, 'blocker')]
+
+        # Rebuild target rows
+        target_rows = []
+        for i, target in enumerate(config_data.get('targets', [])):
+            row = dbc.InputGroup([
+                dbc.Input(
+                    id={'type': 'target-pattern', 'index': i},
+                    placeholder="e.g., *Pump*",
+                    value=target['pattern'],
+                    size="sm",
+                    style={'fontFamily': 'monospace', 'fontSize': '11px'}
+                ),
+                dbc.InputGroupText([
+                    dbc.Checkbox(
+                        id={'type': 'target-invert', 'index': i},
+                        checked=target['invert'],
+                        className="me-1"
+                    ),
+                    html.Small("Invert", style={'fontSize': '10px'})
+                ], style={'fontSize': '10px'}),
+                dbc.Button(
+                    "×",
+                    id={'type': 'target-remove', 'index': i},
+                    color="dark",
+                    size="sm",
+                    style={'fontSize': '14px'}
+                )
+            ], size="sm", className="mb-2")
+            target_rows.append(row)
+
+        if not target_rows:
+            target_rows = [create_filter_row(0, 'target')]
+
+        return blocker_rows, target_rows, f"✅ Loaded '{config_name}'"
+
+    except Exception as e:
+        return dash.no_update, dash.no_update, f"❌ Error loading: {str(e)}"
+
+@app.callback(
+    [Output('saved-configs-list', 'children', allow_duplicate=True),
+     Output('save-status', 'children', allow_duplicate=True)],
+    [Input({'type': 'delete-config', 'index': ALL}, 'n_clicks')],
+    [State({'type': 'delete-config', 'index': ALL}, 'id')],
+    prevent_initial_call=True
+)
+def delete_configuration(n_clicks, ids):
+    """Delete a saved configuration"""
+    if not any(n_clicks):
+        raise dash.exceptions.PreventUpdate
+
+    # Find which button was clicked
+    triggered = ctx.triggered_id
+    if not triggered:
+        raise dash.exceptions.PreventUpdate
+
+    config_name = triggered['index']
+    config_file = os.path.join(CONFIG_DIR, f'{config_name}.json')
+
+    try:
+        os.remove(config_file)
+        # Refresh the list
+        configs = []
+        for filename in sorted(os.listdir(CONFIG_DIR)):
+            if filename.endswith('.json'):
+                config_path = os.path.join(CONFIG_DIR, filename)
+                try:
+                    with open(config_path, 'r') as f:
+                        config_data = json.load(f)
+
+                    name = filename[:-5]
+                    num_blockers = len(config_data.get('blockers', []))
+                    num_targets = len(config_data.get('targets', []))
+
+                    configs.append(
+                        dbc.ButtonGroup([
+                            dbc.Button(
+                                f"📁 {name} ({num_blockers}B/{num_targets}T)",
+                                id={'type': 'load-config', 'index': name},
+                                color="light",
+                                size="sm",
+                                outline=True,
+                                className="text-start"
+                            ),
+                            dbc.Button(
+                                "🗑️",
+                                id={'type': 'delete-config', 'index': name},
+                                color="danger",
+                                size="sm",
+                                outline=True
+                            )
+                        ], className="mb-1 w-100")
+                    )
+                except:
+                    continue
+
+        if not configs:
+            configs = html.Small("No saved configurations", className="text-muted")
+        else:
+            configs = html.Div(configs)
+
+        return configs, f"✅ Deleted '{config_name}'"
+
+    except Exception as e:
+        return dash.no_update, f"❌ Error deleting: {str(e)}"
 
 # =============================================================================
 # RUN
