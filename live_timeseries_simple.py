@@ -30,7 +30,7 @@ INFLUXDB_CONFIG = {
 }
 
 REFRESH_INTERVAL = 15000  # 15 seconds (fast refresh for filter changes, local DB is fast)
-TIME_WINDOW = 24  # Hours of data to display (can show more since it's from database)
+TIME_WINDOW = 168  # Hours of data to display (168 = 1 week)
 
 # Filter which points to track (to reduce clutter)
 # Options: 'all', 'pumps', 'valves', 'ahu', 'temp'
