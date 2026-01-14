@@ -417,72 +417,89 @@ def update_graph(n, y_min, y_max):
         ),
 
         # Y-axis - auto-scale or fixed based on user inputs
-        yaxis=dict(
+        # Calculate data bounds for partial range settings
+        y_axis_config = dict(
             title=dict(text='Value', font=dict(size=12)),
             gridcolor='#333333',  # Medium gray grid (matches visualize_timeseries.py)
             showgrid=True,
             zeroline=False,
             color='#E0E0E0',
             fixedrange=False,  # Allow auto-scaling
-            autorange=True if (y_min is None and y_max is None) else False,  # Auto-fit if no limits set
-            range=[y_min, y_max] if (y_min is not None or y_max is not None) else None  # Use limits if set
-        ),
+        )
 
-        # Legend - on the right side, vertical, limited width
-        legend=dict(
-            orientation='v',
-            yanchor='top',
-            y=1,
-            xanchor='left',
-            x=1.01,
-            bgcolor='rgba(0,0,0,0.8)',
-            bordercolor='#333',
-            borderwidth=1,
-            font=dict(size=10),
-            itemsizing='constant',
-            tracegroupgap=2,
-            # Enable grouped legend interactions
-            groupclick='toggleitem'
-        ),
+        # Handle y-axis range - support partial min/max settings
+        if y_min is not None or y_max is not None:
+            # Get data bounds if we need to fill in missing values
+            data_min = df['value'].min() if not df.empty else 0
+            data_max = df['value'].max() if not df.empty else 100
+            data_padding = (data_max - data_min) * 0.05  # 5% padding
 
-        # Hover settings - closest point only (less sticky)
-        hovermode='closest',
-        hoverlabel=dict(
-            bgcolor='#1a1a1a',
-            font_size=11
-        ),
+            actual_min = y_min if y_min is not None else (data_min - data_padding)
+            actual_max = y_max if y_max is not None else (data_max + data_padding)
 
-        # Drag to pan (easier than zoom for time-series)
-        dragmode='pan',
+            y_axis_config['autorange'] = False
+            y_axis_config['range'] = [actual_min, actual_max]
+        else:
+            y_axis_config['autorange'] = True
 
-        # Add custom buttons for legend control
-        updatemenus=[
-            dict(
-                type='buttons',
-                direction='left',
-                x=0.5,
-                y=1.08,
-                xanchor='center',
+        fig.update_layout(
+            yaxis=y_axis_config,
+
+            # Legend - on the right side, vertical, limited width
+            legend=dict(
+                orientation='v',
                 yanchor='top',
-                showactive=False,
-                buttons=[
-                    dict(
-                        label='Show All',
-                        method='restyle',
-                        args=['visible', True]
-                    ),
-                    dict(
-                        label='Hide All',
-                        method='restyle',
-                        args=['visible', 'legendonly']
-                    )
-                ],
-                bgcolor='#1a1a1a',
+                y=1,
+                xanchor='left',
+                x=1.01,
+                bgcolor='rgba(0,0,0,0.8)',
                 bordercolor='#333',
-                font=dict(color='#e0e0e0', size=10)
-            )
-        ]
-    )
+                borderwidth=1,
+                font=dict(size=10),
+                itemsizing='constant',
+                tracegroupgap=2,
+                # Enable grouped legend interactions
+                groupclick='toggleitem'
+            ),
+
+            # Hover settings - closest point only (less sticky)
+            hovermode='closest',
+            hoverlabel=dict(
+                bgcolor='#1a1a1a',
+                font_size=11
+            ),
+
+            # Drag to pan (easier than zoom for time-series)
+            dragmode='pan',
+
+            # Add custom buttons for legend control
+            updatemenus=[
+                dict(
+                    type='buttons',
+                    direction='left',
+                    x=0.5,
+                    y=1.08,
+                    xanchor='center',
+                    yanchor='top',
+                    showactive=False,
+                    buttons=[
+                        dict(
+                            label='Show All',
+                            method='restyle',
+                            args=['visible', True]
+                        ),
+                        dict(
+                            label='Hide All',
+                            method='restyle',
+                            args=['visible', 'legendonly']
+                        )
+                    ],
+                    bgcolor='#1a1a1a',
+                    bordercolor='#333',
+                    font=dict(color='#e0e0e0', size=10)
+                )
+            ]
+        )
 
     return status, fig
 
