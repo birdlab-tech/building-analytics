@@ -1,0 +1,1752 @@
+{
+  "heating_cooling": {
+    "system": "heating_cooling",
+    "labels": [
+      "AHU01 North Supply Temperature AI_3000336",
+      "AHU01 North Return Temperature AI_3000337",
+      "AHU01 North Return Humidity AI_3000338",
+      "AHU01 North Outside Temperature AI_3000339",
+      "AHU02 South Supply Temperature AI_3000364",
+      "AHU02 South Return Temperature AI_3000365",
+      "AHU02 South Return Humidity AI_3000366",
+      "Ambient Temperature AI_3000390",
+      "Municipal Sanitary Water Pressure AI_3000393",
+      "Internal Sanitary Water Pressure AI_3000394",
+      "Outside Temperature AI_3000402",
+      "Outside Humidity AI_3000403",
+      "Chiller 1 Supply Temperature AI_3000434",
+      "Chiller 1 Return Temperature AI_3000435",
+      "Chiller 2 Supply Temperature AI_3000436",
+      "Chiller 2 Return Temperature AI_3000437",
+      "Primary Chilled Water Supply Temperature AI_3000438",
+      "Boiler Module 1 Supply Temperature AI_3000464",
+      "Boiler Module 1 Return Temperature AI_3000465",
+      "Boiler Module 2 Supply Temperature AI_3000466",
+      "Boiler Module 2 Return Temperature AI_3000467",
+      "Boiler Module 3 Supply Temperature AI_3000468",
+      "Boiler Module 3 Return Temperature AI_3000469",
+      "Boiler Supply Temperature AI_3000470",
+      "Boiler Return Temperature AI_3000471",
+      "Outside Temperature AI_3000472",
+      "AHU01 North Supply Temperature AI_3000492",
+      "Fan Coil North Supply Temperature AI_3000493",
+      "Fan Coil South Supply Temperature AI_3000494",
+      "AHU02 South Supply Temperature AI_3000495",
+      "AHU01 North Free Cooling Damper Control AO_3000343",
+      "AHU01 North Heating Valve Control AO_3000344",
+      "AHU01 North Cooling Valve Control AO_3000345",
+      "AHU02 South Free Cooling Damper Control AO_3000370",
+      "AHU02 South Heating Valve Control AO_3000371",
+      "AHU02 South Cooling Valve Control AO_3000372",
+      "Secondary Fan Coil North Valve Control AO_3000504",
+      "Secondary Fan Coil South Valve Control AO_3000505",
+      "AHU01 North Humidifier Control AO_3000532",
+      "AHU02 South Humidifier Control AO_3000536",
+      "AHU01 North Optimal Start Setpoint AV_3000301",
+      "AHU02 South Optimal Start Setpoint AV_3000304",
+      "Optimal Start Setpoint AV_3000310",
+      "AHU01 North Maximum Supply Temperature Setpoint AV_3000351",
+      "AHU01 North Minimum Supply Temperature Setpoint AV_3000352",
+      "AHU01 North Maximum Outside Temperature Setpoint AV_3000353",
+      "AHU01 North Minimum Outside Temperature Setpoint AV_3000354",
+      "AHU01 North Supply Temperature Setpoint AV_3000355",
+      "AHU01 North Cooling/Heating Differential Setpoint AV_3000356",
+      "AHU01 North Humidity Setpoint AV_3000357",
+      "AHU01 North Minimum Free Cooling Damper Limit AV_3000358",
+      "AHU02 South Maximum Supply Temperature Setpoint AV_3000378",
+      "AHU02 South Minimum Supply Temperature Setpoint AV_3000379",
+      "AHU02 South Maximum Outside Temperature Setpoint AV_3000380",
+      "AHU02 South Minimum Outside Temperature Setpoint AV_3000381",
+      "AHU02 South Supply Temperature Setpoint AV_3000382",
+      "AHU02 South Cooling/Heating Differential Setpoint AV_3000383",
+      "AHU02 South Humidity Setpoint AV_3000384",
+      "AHU02 South Minimum Free Cooling Damper Limit AV_3000385",
+      "Chiller 2 Temperature Setpoint AV_3000458",
+      "Minimum Outside Temperature Limit AV_3000459",
+      "Maximum Boiler Supply Temperature Setpoint AV_3000487",
+      "Maximum Outside Temperature Limit AV_3000488",
+      "Maximum FCU North Supply Temperature Setpoint AV_3000518",
+      "Minimum FCU North Supply Temperature Setpoint AV_3000519",
+      "Maximum FCU North Outside Temperature Setpoint AV_3000520",
+      "Minimum FCU North Outside Temperature Setpoint AV_3000521",
+      "Fan Coil North Supply Temperature Setpoint AV_3000522",
+      "Maximum FCU South Supply Temperature Setpoint AV_3000523",
+      "Minimum FCU South Supply Temperature Setpoint AV_3000524",
+      "Maximum FCU South Outside Temperature Setpoint AV_3000525",
+      "Minimum FCU South Outside Temperature Setpoint AV_3000526",
+      "Fan Coil South Supply Temperature Setpoint AV_3000527",
+      "AHU01 North Outside Temperature AV_3000643",
+      "On/Off Pump Stop AV_3000674",
+      "PID Valve Sequencer AV_3000675",
+      "Outside Temperature AV_3000697",
+      "Heating Integration Time AV_3000707",
+      "Heating Proportional Band AV_3000708",
+      "Reserve Circuit 3 Status BI_3000058",
+      "Fan Coils North Circuit Status BI_3000061",
+      "Reserve Circuit 4 Status BI_3000062",
+      "Reserve Circuit 2 Status BI_3000063",
+      "Lighting Circuit 1-4-7 Status BI_3000065",
+      "Lighting Circuit 2-5-8 Status BI_3000066",
+      "Lighting Circuit 3-6-9 Status BI_3000067",
+      "Lighting Circuit 10-13-16 Status BI_3000074",
+      "Lighting Circuit 11-15-17 Status BI_3000075",
+      "Lighting Circuit 12-14-20 Status BI_3000076",
+      "Lighting Circuit 18-19-21 Status BI_3000077",
+      "Restroom Lighting Circuit Status BI_3000080",
+      "Reserve Circuit 2 Status BI_3000081",
+      "Reserve Circuit 3 Status BI_3000082",
+      "Reserve Circuit 4 Status BI_3000083",
+      "Lighting Circuit 1-2-3-4 Status BI_3000087",
+      "Lighting Circuit 5-7-8 Status BI_3000088",
+      "Lighting Circuit 9-10-11-12 Status BI_3000089",
+      "Fan Coils South 4 Circuit Status BI_3000096",
+      "Lighting Circuit 13-13 People Count Status BI_3000097",
+      "Lighting Circuit 17-18 Status BI_3000098",
+      "Fan Coils South 1-2-3 Circuit Status BI_3000099",
+      "Lighting Circuit 1-4-7 Status BI_3000101",
+      "Lighting Circuit 2-5-8 Status BI_3000102",
+      "Lighting Circuit 3-6-9 Status BI_3000103",
+      "Lighting Circuit 10-13-16 Status BI_3000104",
+      "Lighting Circuit 1-4-7 Status BI_3000105",
+      "Lighting Circuit 2-5-8 Status BI_3000106",
+      "Lighting Circuit 3-6-9 Status BI_3000107",
+      "Lighting Circuit 10-12-14 Status BI_3000108",
+      "Lighting Circuit 1-4-7 Status BI_3000109",
+      "Lighting Circuit 2-5-8 Status BI_3000110",
+      "Lighting Circuit 3-6-9 Status BI_3000111",
+      "Lighting Circuit 10-13-16 Status BI_3000112",
+      "Lighting Circuit 1-4-7 Status BI_3000113",
+      "Lighting Circuit 2-5-8 Status BI_3000114",
+      "Lighting Circuit 3-6-9 Status BI_3000115",
+      "Lighting Circuit 10-12-14 Status BI_3000116",
+      "Lighting Circuit 1-4-7 Status BI_3000117",
+      "Lighting Circuit 2-5-8 Status BI_3000118",
+      "Lighting Circuit 3-6-9 Status BI_3000119",
+      "Lighting Circuit 10-13-16 Status BI_3000120",
+      "Lighting Circuit 1-4-7 Status BI_3000121",
+      "Lighting Circuit 2-5-8 Status BI_3000122",
+      "Lighting Circuit 3-6-9 Status BI_3000123",
+      "Lighting Circuit 10-12-14 Status BI_3000124",
+      "Lighting Circuit 1-4-7 Hall1 Status BI_3000125",
+      "Lighting Circuit 2-5-8 Hall 2 Status BI_3000126",
+      "Lighting Circuit 3-6-9 Hall 3 Status BI_3000127",
+      "Lighting Circuit 10-13-16 Status BI_3000128",
+      "Lighting Circuit 1-4-7 Status BI_3000129",
+      "Lighting Circuit 2-5-8 Status BI_3000130",
+      "Lighting Circuit 3-6-9 Status BI_3000131",
+      "Lighting Circuit 10-12-14 Status BI_3000132",
+      "Lighting 11-15-17 Status BI_3000140",
+      "Lighting Circuit 12-14-18 Status BI_3000141",
+      "Fan Coils South Circuit Status BI_3000142",
+      "Reserve Circuit 1 Status BI_3000143",
+      "Reserve Circuit 2 Status BI_3000144",
+      "Lighting 11-13-15 Status BI_3000152",
+      "Restroom Lighting Circuit Status BI_3000153",
+      "Fan Coils North Circuit Status BI_3000154",
+      "Reserve Circuit 1 Status BI_3000155",
+      "Reserve Circuit 2 Status BI_3000156",
+      "Lighting 11-15-17 Status BI_3000164",
+      "Lighting Circuit 12-14-18 Status BI_3000165",
+      "Fan Coils North 1-2-3-4 Circuit Status BI_3000166",
+      "Fan Coils South 1-2-3-4 Circuit Status BI_3000174",
+      "Restroom Lighting Circuit Status BI_3000175",
+      "Lighting 11-13-15 Status BI_3000176",
+      "Lighting 11-15-17 Status BI_3000184",
+      "Lighting Circuit 12-14-18 Status BI_3000185",
+      "Fan Coils South 1-2-3-4 Circuit Status BI_3000186",
+      "Lighting 11-13-15 Status BI_3000194",
+      "Restroom Lighting Circuit Status BI_3000195",
+      "Fan Coils North Circuit Status BI_3000196",
+      "Lighting 11-15-17 Status BI_3000204",
+      "Lighting Circuit 12-14-18 Status BI_3000205",
+      "Fan Coils South 1-2-3-4 Circuit Status BI_3000206",
+      "Restroom Lighting Circuit Status BI_3000214",
+      "Lighting Circuit 11-13-15 Status BI_3000215",
+      "Fan Coils North 1-2-3-4 Circuit Status BI_3000216",
+      "Air Curtain 1 Circuit Status BI_3000320",
+      "Outdoor Unit Circuit Status BI_3000321",
+      "Restroom Extractor Circuit Status BI_3000322",
+      "Lighting Circuit 1-4-7 Status BI_3000323",
+      "Lighting Circuit 2-6 Status BI_3000324",
+      "Lighting Circuit 3-5-11 Status BI_3000325",
+      "Basement Rooms Lighting Circuit Status BI_3000326",
+      "Fire Alarm BI_3000334",
+      "Detection Fault Alarm BI_3000335",
+      "AHU01 North Humidifier Status BI_3000340",
+      "AHU01 North Return Filter Alarm BI_3000341",
+      "AHU01 North Heat Recovery Filter Alarm BI_3000342",
+      "AHU02 South Humidifier Status BI_3000367",
+      "AHU02 South Return Filter Alarm BI_3000368",
+      "AHU02 South Heat Recovery Filter Alarm BI_3000369",
+      "High Temperature Alarm BI_3000391",
+      "High Circuit Breaker Alarm BI_3000392",
+      "Low Level Alarm BI_3000395",
+      "Pump 1 Alarm BI_3000396",
+      "Pump 1 Status BI_3000397",
+      "Pump 2 Alarm BI_3000398",
+      "Pump 2 Status BI_3000399",
+      "Pump 3 Alarm BI_3000400",
+      "Pump 3 Status BI_3000401",
+      "Secondary Chilled Water Pump 2.1 Status BI_3000405",
+      "Secondary Chilled Water Pump 2.2 Status BI_3000406",
+      "Secondary Chilled Water Pump 3.1 Status BI_3000407",
+      "Secondary Chilled Water Pump 3.2 Status BI_3000408",
+      "Secondary Chilled Water Pump 4.1 Status BI_3000409",
+      "Secondary Chilled Water Pump 4.2 Status BI_3000410",
+      "Secondary Chilled Water Pump 5.1 Status BI_3000411",
+      "Secondary Chilled Water Pump 5.2 Status BI_3000412",
+      "Fire PL-Fourth Floor Alarm BI_3000425",
+      "Fire PL-Third Floor Alarm BI_3000426",
+      "Fire PL-Second Floor Alarm BI_3000427",
+      "Fire PL-First Floor Alarm BI_3000428",
+      "Fire PL-Ground Floor Alarm BI_3000429",
+      "Elevator 1 General Alarm BI_3000430",
+      "Elevator 1 Fault Alarm BI_3000431",
+      "Elevator 2 General Alarm BI_3000432",
+      "Elevator 2 Fault Alarm BI_3000433",
+      "Primary Chilled Water Pump 1.1 Status BI_3000439",
+      "Primary Chilled Water Pump 1.2 Status BI_3000440",
+      "Primary Chilled Water Pump 1.3 Status BI_3000441",
+      "Chiller 1 Alarm BI_3000442",
+      "Chiller 1 Status BI_3000443",
+      "Chiller 1 Flow Status BI_3000444",
+      "Chiller 2 Alarm BI_3000445",
+      "Chiller 2 Status BI_3000446",
+      "Chiller 2 Flow Status BI_3000447",
+      "VRV System Status BI_3000448",
+      "Primary Heating Water Pump 1.1 Status BI_3000473",
+      "Primary Heating Water Pump 1.2 Status BI_3000474",
+      "Boiler Module 1 Alarm BI_3000475",
+      "Boiler Module 1 Status BI_3000476",
+      "Boiler Module 2 Alarm BI_3000477",
+      "Boiler Module 2 Status BI_3000478",
+      "Boiler Module 3 Alarm BI_3000479",
+      "Boiler Module 3 Status BI_3000480",
+      "Boiler Flow Status BI_3000481",
+      "Secondary Heating Water Pump 2.1 Status BI_3000496",
+      "Secondary Heating Water Pump 2.2 Status BI_3000497",
+      "Secondary Heating Water Pump 3.1 Status BI_3000498",
+      "Secondary Heating Water Pump 3.2 Status BI_3000499",
+      "Secondary Heating Water Pump 4.1 Status BI_3000500",
+      "Secondary Heating Water Pump 4.2 Status BI_3000501",
+      "Secondary Heating Water Pump 5.1 Status BI_3000502",
+      "Secondary Heating Water Pump 5.2 Status BI_3000503",
+      "AHU01 North Extractor Status BI_3000529",
+      "AHU01 North Outside Filter Alarm BI_3000530",
+      "AHU02 South Extractor Status BI_3000533",
+      "AHU02 South Outside Filter Alarm BI_3000534",
+      "Roof Lighting Circuit 1 Status BI_3000537",
+      "Roof Lighting Circuit 2 Status BI_3000538",
+      "AHU01 North Supply Fan Status BI_3000629",
+      "AHU01 North Return Fan Status BI_3000630",
+      "AHU01 North Heat Recovery Status BI_3000631",
+      "AHU02 South Supply Fan Status BI_3000632",
+      "AHU02 South Return Fan Status BI_3000633",
+      "AHU02 South Heat Recovery Status BI_3000634"
+    ],
+    "blockers": [
+      {
+        "name": "Bs1",
+        "patterns": [
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          }
+        ]
+      },
+      {
+        "name": "Bs2",
+        "patterns": [
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          }
+        ]
+      },
+      {
+        "name": "Bs3",
+        "patterns": [
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          }
+        ]
+      },
+      {
+        "name": "Bs4",
+        "patterns": [
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          }
+        ]
+      }
+    ],
+    "targets": [
+      {
+        "name": "Ts",
+        "patterns": [
+          {
+            "pattern": "Alarm",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          }
+        ]
+      }
+    ]
+  },
+  "lighting": {
+    "system": "lighting",
+    "labels": [
+      "AHU01 North Supply Temperature AI_3000336",
+      "AHU01 North Return Temperature AI_3000337",
+      "AHU01 North Return Humidity AI_3000338",
+      "AHU01 North Outside Temperature AI_3000339",
+      "AHU02 South Supply Temperature AI_3000364",
+      "AHU02 South Return Temperature AI_3000365",
+      "AHU02 South Return Humidity AI_3000366",
+      "Ambient Temperature AI_3000390",
+      "Municipal Sanitary Water Pressure AI_3000393",
+      "Internal Sanitary Water Pressure AI_3000394",
+      "Outside Temperature AI_3000402",
+      "Outside Humidity AI_3000403",
+      "Chiller 1 Supply Temperature AI_3000434",
+      "Chiller 1 Return Temperature AI_3000435",
+      "Chiller 2 Supply Temperature AI_3000436",
+      "Chiller 2 Return Temperature AI_3000437",
+      "Primary Chilled Water Supply Temperature AI_3000438",
+      "Boiler Module 1 Supply Temperature AI_3000464",
+      "Boiler Module 1 Return Temperature AI_3000465",
+      "Boiler Module 2 Supply Temperature AI_3000466",
+      "Boiler Module 2 Return Temperature AI_3000467",
+      "Boiler Module 3 Supply Temperature AI_3000468",
+      "Boiler Module 3 Return Temperature AI_3000469",
+      "Boiler Supply Temperature AI_3000470",
+      "Boiler Return Temperature AI_3000471",
+      "Outside Temperature AI_3000472",
+      "AHU01 North Supply Temperature AI_3000492",
+      "Fan Coil North Supply Temperature AI_3000493",
+      "Fan Coil South Supply Temperature AI_3000494",
+      "AHU02 South Supply Temperature AI_3000495",
+      "AHU01 North Free Cooling Damper Control AO_3000343",
+      "AHU01 North Heating Valve Control AO_3000344",
+      "AHU01 North Cooling Valve Control AO_3000345",
+      "AHU02 South Free Cooling Damper Control AO_3000370",
+      "AHU02 South Heating Valve Control AO_3000371",
+      "AHU02 South Cooling Valve Control AO_3000372",
+      "Secondary Fan Coil North Valve Control AO_3000504",
+      "Secondary Fan Coil South Valve Control AO_3000505",
+      "AHU01 North Humidifier Control AO_3000532",
+      "AHU02 South Humidifier Control AO_3000536",
+      "AHU01 North Optimal Start Setpoint AV_3000301",
+      "AHU02 South Optimal Start Setpoint AV_3000304",
+      "Optimal Start Setpoint AV_3000310",
+      "AHU01 North Maximum Supply Temperature Setpoint AV_3000351",
+      "AHU01 North Minimum Supply Temperature Setpoint AV_3000352",
+      "AHU01 North Maximum Outside Temperature Setpoint AV_3000353",
+      "AHU01 North Minimum Outside Temperature Setpoint AV_3000354",
+      "AHU01 North Supply Temperature Setpoint AV_3000355",
+      "AHU01 North Cooling/Heating Differential Setpoint AV_3000356",
+      "AHU01 North Humidity Setpoint AV_3000357",
+      "AHU01 North Minimum Free Cooling Damper Limit AV_3000358",
+      "AHU02 South Maximum Supply Temperature Setpoint AV_3000378",
+      "AHU02 South Minimum Supply Temperature Setpoint AV_3000379",
+      "AHU02 South Maximum Outside Temperature Setpoint AV_3000380",
+      "AHU02 South Minimum Outside Temperature Setpoint AV_3000381",
+      "AHU02 South Supply Temperature Setpoint AV_3000382",
+      "AHU02 South Cooling/Heating Differential Setpoint AV_3000383",
+      "AHU02 South Humidity Setpoint AV_3000384",
+      "AHU02 South Minimum Free Cooling Damper Limit AV_3000385",
+      "Chiller 2 Temperature Setpoint AV_3000458",
+      "Minimum Outside Temperature Limit AV_3000459",
+      "Maximum Boiler Supply Temperature Setpoint AV_3000487",
+      "Maximum Outside Temperature Limit AV_3000488",
+      "Maximum FCU North Supply Temperature Setpoint AV_3000518",
+      "Minimum FCU North Supply Temperature Setpoint AV_3000519",
+      "Maximum FCU North Outside Temperature Setpoint AV_3000520",
+      "Minimum FCU North Outside Temperature Setpoint AV_3000521",
+      "Fan Coil North Supply Temperature Setpoint AV_3000522",
+      "Maximum FCU South Supply Temperature Setpoint AV_3000523",
+      "Minimum FCU South Supply Temperature Setpoint AV_3000524",
+      "Maximum FCU South Outside Temperature Setpoint AV_3000525",
+      "Minimum FCU South Outside Temperature Setpoint AV_3000526",
+      "Fan Coil South Supply Temperature Setpoint AV_3000527",
+      "AHU01 North Outside Temperature AV_3000643",
+      "On/Off Pump Stop AV_3000674",
+      "PID Valve Sequencer AV_3000675",
+      "Outside Temperature AV_3000697",
+      "Heating Integration Time AV_3000707",
+      "Heating Proportional Band AV_3000708",
+      "Reserve Circuit 3 Status BI_3000058",
+      "Fan Coils North Circuit Status BI_3000061",
+      "Reserve Circuit 4 Status BI_3000062",
+      "Reserve Circuit 2 Status BI_3000063",
+      "Lighting Circuit 1-4-7 Status BI_3000065",
+      "Lighting Circuit 2-5-8 Status BI_3000066",
+      "Lighting Circuit 3-6-9 Status BI_3000067",
+      "Lighting Circuit 10-13-16 Status BI_3000074",
+      "Lighting Circuit 11-15-17 Status BI_3000075",
+      "Lighting Circuit 12-14-20 Status BI_3000076",
+      "Lighting Circuit 18-19-21 Status BI_3000077",
+      "Restroom Lighting Circuit Status BI_3000080",
+      "Reserve Circuit 2 Status BI_3000081",
+      "Reserve Circuit 3 Status BI_3000082",
+      "Reserve Circuit 4 Status BI_3000083",
+      "Lighting Circuit 1-2-3-4 Status BI_3000087",
+      "Lighting Circuit 5-7-8 Status BI_3000088",
+      "Lighting Circuit 9-10-11-12 Status BI_3000089",
+      "Fan Coils South 4 Circuit Status BI_3000096",
+      "Lighting Circuit 13-13 People Count Status BI_3000097",
+      "Lighting Circuit 17-18 Status BI_3000098",
+      "Fan Coils South 1-2-3 Circuit Status BI_3000099",
+      "Lighting Circuit 1-4-7 Status BI_3000101",
+      "Lighting Circuit 2-5-8 Status BI_3000102",
+      "Lighting Circuit 3-6-9 Status BI_3000103",
+      "Lighting Circuit 10-13-16 Status BI_3000104",
+      "Lighting Circuit 1-4-7 Status BI_3000105",
+      "Lighting Circuit 2-5-8 Status BI_3000106",
+      "Lighting Circuit 3-6-9 Status BI_3000107",
+      "Lighting Circuit 10-12-14 Status BI_3000108",
+      "Lighting Circuit 1-4-7 Status BI_3000109",
+      "Lighting Circuit 2-5-8 Status BI_3000110",
+      "Lighting Circuit 3-6-9 Status BI_3000111",
+      "Lighting Circuit 10-13-16 Status BI_3000112",
+      "Lighting Circuit 1-4-7 Status BI_3000113",
+      "Lighting Circuit 2-5-8 Status BI_3000114",
+      "Lighting Circuit 3-6-9 Status BI_3000115",
+      "Lighting Circuit 10-12-14 Status BI_3000116",
+      "Lighting Circuit 1-4-7 Status BI_3000117",
+      "Lighting Circuit 2-5-8 Status BI_3000118",
+      "Lighting Circuit 3-6-9 Status BI_3000119",
+      "Lighting Circuit 10-13-16 Status BI_3000120",
+      "Lighting Circuit 1-4-7 Status BI_3000121",
+      "Lighting Circuit 2-5-8 Status BI_3000122",
+      "Lighting Circuit 3-6-9 Status BI_3000123",
+      "Lighting Circuit 10-12-14 Status BI_3000124",
+      "Lighting Circuit 1-4-7 Hall1 Status BI_3000125",
+      "Lighting Circuit 2-5-8 Hall 2 Status BI_3000126",
+      "Lighting Circuit 3-6-9 Hall 3 Status BI_3000127",
+      "Lighting Circuit 10-13-16 Status BI_3000128",
+      "Lighting Circuit 1-4-7 Status BI_3000129",
+      "Lighting Circuit 2-5-8 Status BI_3000130",
+      "Lighting Circuit 3-6-9 Status BI_3000131",
+      "Lighting Circuit 10-12-14 Status BI_3000132",
+      "Lighting 11-15-17 Status BI_3000140",
+      "Lighting Circuit 12-14-18 Status BI_3000141",
+      "Fan Coils South Circuit Status BI_3000142",
+      "Reserve Circuit 1 Status BI_3000143",
+      "Reserve Circuit 2 Status BI_3000144",
+      "Lighting 11-13-15 Status BI_3000152",
+      "Restroom Lighting Circuit Status BI_3000153",
+      "Fan Coils North Circuit Status BI_3000154",
+      "Reserve Circuit 1 Status BI_3000155",
+      "Reserve Circuit 2 Status BI_3000156",
+      "Lighting 11-15-17 Status BI_3000164",
+      "Lighting Circuit 12-14-18 Status BI_3000165",
+      "Fan Coils North 1-2-3-4 Circuit Status BI_3000166",
+      "Fan Coils South 1-2-3-4 Circuit Status BI_3000174",
+      "Restroom Lighting Circuit Status BI_3000175",
+      "Lighting 11-13-15 Status BI_3000176",
+      "Lighting 11-15-17 Status BI_3000184",
+      "Lighting Circuit 12-14-18 Status BI_3000185",
+      "Fan Coils South 1-2-3-4 Circuit Status BI_3000186",
+      "Lighting 11-13-15 Status BI_3000194",
+      "Restroom Lighting Circuit Status BI_3000195",
+      "Fan Coils North Circuit Status BI_3000196",
+      "Lighting 11-15-17 Status BI_3000204",
+      "Lighting Circuit 12-14-18 Status BI_3000205",
+      "Fan Coils South 1-2-3-4 Circuit Status BI_3000206",
+      "Restroom Lighting Circuit Status BI_3000214",
+      "Lighting Circuit 11-13-15 Status BI_3000215",
+      "Fan Coils North 1-2-3-4 Circuit Status BI_3000216",
+      "Air Curtain 1 Circuit Status BI_3000320",
+      "Outdoor Unit Circuit Status BI_3000321",
+      "Restroom Extractor Circuit Status BI_3000322",
+      "Lighting Circuit 1-4-7 Status BI_3000323",
+      "Lighting Circuit 2-6 Status BI_3000324",
+      "Lighting Circuit 3-5-11 Status BI_3000325",
+      "Basement Rooms Lighting Circuit Status BI_3000326",
+      "Fire Alarm BI_3000334",
+      "Detection Fault Alarm BI_3000335",
+      "AHU01 North Humidifier Status BI_3000340",
+      "AHU01 North Return Filter Alarm BI_3000341",
+      "AHU01 North Heat Recovery Filter Alarm BI_3000342",
+      "AHU02 South Humidifier Status BI_3000367",
+      "AHU02 South Return Filter Alarm BI_3000368",
+      "AHU02 South Heat Recovery Filter Alarm BI_3000369",
+      "High Temperature Alarm BI_3000391",
+      "High Circuit Breaker Alarm BI_3000392",
+      "Low Level Alarm BI_3000395",
+      "Pump 1 Alarm BI_3000396",
+      "Pump 1 Status BI_3000397",
+      "Pump 2 Alarm BI_3000398",
+      "Pump 2 Status BI_3000399",
+      "Pump 3 Alarm BI_3000400",
+      "Pump 3 Status BI_3000401",
+      "Secondary Chilled Water Pump 2.1 Status BI_3000405",
+      "Secondary Chilled Water Pump 2.2 Status BI_3000406",
+      "Secondary Chilled Water Pump 3.1 Status BI_3000407",
+      "Secondary Chilled Water Pump 3.2 Status BI_3000408",
+      "Secondary Chilled Water Pump 4.1 Status BI_3000409",
+      "Secondary Chilled Water Pump 4.2 Status BI_3000410",
+      "Secondary Chilled Water Pump 5.1 Status BI_3000411",
+      "Secondary Chilled Water Pump 5.2 Status BI_3000412",
+      "Fire PL-Fourth Floor Alarm BI_3000425",
+      "Fire PL-Third Floor Alarm BI_3000426",
+      "Fire PL-Second Floor Alarm BI_3000427",
+      "Fire PL-First Floor Alarm BI_3000428",
+      "Fire PL-Ground Floor Alarm BI_3000429",
+      "Elevator 1 General Alarm BI_3000430",
+      "Elevator 1 Fault Alarm BI_3000431",
+      "Elevator 2 General Alarm BI_3000432",
+      "Elevator 2 Fault Alarm BI_3000433",
+      "Primary Chilled Water Pump 1.1 Status BI_3000439",
+      "Primary Chilled Water Pump 1.2 Status BI_3000440",
+      "Primary Chilled Water Pump 1.3 Status BI_3000441",
+      "Chiller 1 Alarm BI_3000442",
+      "Chiller 1 Status BI_3000443",
+      "Chiller 1 Flow Status BI_3000444",
+      "Chiller 2 Alarm BI_3000445",
+      "Chiller 2 Status BI_3000446",
+      "Chiller 2 Flow Status BI_3000447",
+      "VRV System Status BI_3000448",
+      "Primary Heating Water Pump 1.1 Status BI_3000473",
+      "Primary Heating Water Pump 1.2 Status BI_3000474",
+      "Boiler Module 1 Alarm BI_3000475",
+      "Boiler Module 1 Status BI_3000476",
+      "Boiler Module 2 Alarm BI_3000477",
+      "Boiler Module 2 Status BI_3000478",
+      "Boiler Module 3 Alarm BI_3000479",
+      "Boiler Module 3 Status BI_3000480",
+      "Boiler Flow Status BI_3000481",
+      "Secondary Heating Water Pump 2.1 Status BI_3000496",
+      "Secondary Heating Water Pump 2.2 Status BI_3000497",
+      "Secondary Heating Water Pump 3.1 Status BI_3000498",
+      "Secondary Heating Water Pump 3.2 Status BI_3000499",
+      "Secondary Heating Water Pump 4.1 Status BI_3000500",
+      "Secondary Heating Water Pump 4.2 Status BI_3000501",
+      "Secondary Heating Water Pump 5.1 Status BI_3000502",
+      "Secondary Heating Water Pump 5.2 Status BI_3000503",
+      "AHU01 North Extractor Status BI_3000529",
+      "AHU01 North Outside Filter Alarm BI_3000530",
+      "AHU02 South Extractor Status BI_3000533",
+      "AHU02 South Outside Filter Alarm BI_3000534",
+      "Roof Lighting Circuit 1 Status BI_3000537",
+      "Roof Lighting Circuit 2 Status BI_3000538",
+      "AHU01 North Supply Fan Status BI_3000629",
+      "AHU01 North Return Fan Status BI_3000630",
+      "AHU01 North Heat Recovery Status BI_3000631",
+      "AHU02 South Supply Fan Status BI_3000632",
+      "AHU02 South Return Fan Status BI_3000633",
+      "AHU02 South Heat Recovery Status BI_3000634"
+    ],
+    "blockers": [
+      {
+        "name": "Bs1",
+        "patterns": [
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          },
+          {
+            "pattern": "¬",
+            "action": "block"
+          }
+        ]
+      },
+      {
+        "name": "Bs2",
+        "patterns": [
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          }
+        ]
+      },
+      {
+        "name": "Bs3",
+        "patterns": [
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          }
+        ]
+      },
+      {
+        "name": "Bs4",
+        "patterns": [
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          },
+          {
+            "pattern": 1,
+            "action": "block"
+          }
+        ]
+      }
+    ],
+    "targets": [
+      {
+        "name": "Ts",
+        "patterns": [
+          {
+            "pattern": "Alarm",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          },
+          {
+            "pattern": "¬",
+            "action": "include"
+          }
+        ]
+      }
+    ]
+  }
+}
