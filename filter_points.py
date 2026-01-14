@@ -778,4 +778,4 @@ if __name__ == '__main__':
     print("  Invert: Reverse the match")
     print("="*70)
 
-    app.run(debug=True, host='0.0.0.0', port=8051)
+    app.run(debug=False, host='0.0.0.0', port=8051)
