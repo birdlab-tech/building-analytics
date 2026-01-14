@@ -385,7 +385,8 @@ def update_graph(n, y_min, y_max):
         font=dict(color='#e0e0e0', size=11),
 
         # Preserve user interactions (zoom, pan, legend selections) across updates
-        uirevision='constant',
+        # Include y-axis settings in revision so changes trigger re-render
+        uirevision=f'yaxis-{y_min}-{y_max}',
 
         # X-axis - fixed range controls
         xaxis=dict(
