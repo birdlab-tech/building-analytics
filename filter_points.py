@@ -30,7 +30,7 @@ influx_client = InfluxDBClient(
 )
 
 # Directory for saved configurations
-CONFIG_DIR = '/tmp/bms_filter_configs'
+CONFIG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'filter_configs')
 os.makedirs(CONFIG_DIR, exist_ok=True)
 
 # =============================================================================
