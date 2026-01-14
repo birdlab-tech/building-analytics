@@ -414,11 +414,12 @@ def update_graph(n, y_min, y_max):
                 xanchor='left',
                 yanchor='top'
             )
-        ),
+        )
+    )
 
-        # Y-axis - auto-scale or fixed based on user inputs
-        # Calculate data bounds for partial range settings
-        y_axis_config = dict(
+    # Y-axis - auto-scale or fixed based on user inputs
+    # Calculate data bounds for partial range settings
+    y_axis_config = dict(
             title=dict(text='Value', font=dict(size=12)),
             gridcolor='#333333',  # Medium gray grid (matches visualize_timeseries.py)
             showgrid=True,
