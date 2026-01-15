@@ -30,8 +30,7 @@ INFLUXDB_CONFIG = {
     'bucket': 'bms_data'
 }
 
-REFRESH_INTERVAL = 15000  # 15 seconds (fast refresh for filter changes, local DB is fast)
-TIME_WINDOW = 24  # Hours of data to display (keep low for memory - 168h was using 450MB!)
+TIME_WINDOW = 24  # Hours of data to display
 MAX_SENSORS_UNFILTERED = 50  # Limit sensors when no filter active (for usability)
 
 # Filter file path (set by filter interface)
@@ -119,6 +118,16 @@ app.layout = html.Div([
             'fontSize': '12px',
             'flex': '1'  # Take remaining space
         }),
+        html.Button("🔄 Refresh", id='refresh-btn', n_clicks=0, style={
+            'color': '#00aaff',
+            'fontSize': '14px',
+            'background': 'transparent',
+            'padding': '4px 12px',
+            'border': '1px solid #00aaff',
+            'borderRadius': '4px',
+            'cursor': 'pointer',
+            'marginRight': '10px'
+        }),
         html.A("🔍 Filter Points", href="/filter/", target="_blank", style={
             'color': '#00aaff',
             'fontSize': '14px',
@@ -162,12 +171,8 @@ app.layout = html.Div([
         }
     ),
 
-    # Auto-refresh (n_intervals=0 triggers immediately on load, then every REFRESH_INTERVAL)
-    dcc.Interval(
-        id='interval',
-        interval=REFRESH_INTERVAL,
-        n_intervals=0  # Starts at 0, triggers callback immediately
-    )
+    # Store for initial load trigger
+    dcc.Store(id='initial-load', data=True)
 ], style={
     'backgroundColor': '#000000',
     'margin': '0',
@@ -258,9 +263,10 @@ def fetch_data_from_influxdb():
 @app.callback(
     [Output('status', 'children'),
      Output('main-timeseries', 'figure')],
-    [Input('interval', 'n_intervals')]
+    [Input('refresh-btn', 'n_clicks'),
+     Input('initial-load', 'data')]
 )
-def update_graph(n):
+def update_graph(n_clicks, initial):
     """Update the main graph"""
     df, timestamp, active_filter, is_limited = fetch_data_from_influxdb()
 
@@ -345,7 +351,8 @@ def update_graph(n):
             font=dict(size=10),
             itemsizing='constant',
             tracegroupgap=2,
-            groupclick='toggleitem'
+            itemclick='toggle',        # Single click toggles trace
+            itemdoubleclick='toggleothers'  # Double click isolates trace
         ),
         updatemenus=[
             dict(
