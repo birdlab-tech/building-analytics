@@ -129,21 +129,17 @@ app.layout = html.Div([
             'marginRight': '10px'
         }),
         html.Button("Hide All", id='hide-all-btn', n_clicks=0, style={
-            'color': '#888',
             'fontSize': '12px',
             'background': 'transparent',
             'padding': '3px 8px',
-            'border': '1px solid #555',
             'borderRadius': '3px',
             'cursor': 'pointer',
             'marginRight': '5px'
         }),
         html.Button("Show All", id='show-all-btn', n_clicks=0, style={
-            'color': '#888',
             'fontSize': '12px',
             'background': 'transparent',
             'padding': '3px 8px',
-            'border': '1px solid #555',
             'borderRadius': '3px',
             'cursor': 'pointer',
             'marginRight': '10px'
@@ -282,23 +278,44 @@ def fetch_data_from_influxdb():
 # =============================================================================
 
 @app.callback(
-    Output('visibility-state', 'data'),
+    [Output('visibility-state', 'data'),
+     Output('hide-all-btn', 'style'),
+     Output('show-all-btn', 'style')],
     [Input('hide-all-btn', 'n_clicks'),
      Input('show-all-btn', 'n_clicks')],
     [State('visibility-state', 'data')]
 )
 def update_visibility(hide_clicks, show_clicks, current_state):
-    """Update visibility state when Hide All or Show All is clicked"""
+    """Update visibility state and button styles"""
     ctx = callback_context
-    if not ctx.triggered:
-        return current_state
 
-    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-    if button_id == 'hide-all-btn':
-        return 'hide'
-    elif button_id == 'show-all-btn':
-        return 'show'
-    return current_state
+    # Determine new state
+    new_state = current_state
+    if ctx.triggered:
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        if button_id == 'hide-all-btn':
+            new_state = 'hide'
+        elif button_id == 'show-all-btn':
+            new_state = 'show'
+
+    # Button styles - blue for available action, grey for current state
+    base_style = {
+        'fontSize': '12px',
+        'background': 'transparent',
+        'padding': '3px 8px',
+        'borderRadius': '3px',
+        'cursor': 'pointer',
+        'marginRight': '5px'
+    }
+    blue_style = {**base_style, 'color': '#00aaff', 'border': '1px solid #00aaff'}
+    grey_style = {**base_style, 'color': '#555', 'border': '1px solid #333', 'marginRight': '10px'}
+
+    if new_state == 'show':
+        # All visible - Hide All is the action, Show All is greyed
+        return new_state, blue_style, {**grey_style, 'marginRight': '10px'}
+    else:
+        # All hidden - Show All is the action, Hide All is greyed
+        return new_state, {**grey_style, 'marginRight': '5px'}, {**blue_style, 'marginRight': '10px'}
 
 @app.callback(
     [Output('status', 'children'),
