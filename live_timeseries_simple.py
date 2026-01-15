@@ -9,8 +9,8 @@ Clean, full-screen visualization similar to newplot.png with:
 """
 
 import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash import dcc, html, callback_context
+from dash.dependencies import Input, Output, State
 import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime, timedelta
@@ -128,6 +128,26 @@ app.layout = html.Div([
             'cursor': 'pointer',
             'marginRight': '10px'
         }),
+        html.Button("Hide All", id='hide-all-btn', n_clicks=0, style={
+            'color': '#888',
+            'fontSize': '12px',
+            'background': 'transparent',
+            'padding': '3px 8px',
+            'border': '1px solid #555',
+            'borderRadius': '3px',
+            'cursor': 'pointer',
+            'marginRight': '5px'
+        }),
+        html.Button("Show All", id='show-all-btn', n_clicks=0, style={
+            'color': '#888',
+            'fontSize': '12px',
+            'background': 'transparent',
+            'padding': '3px 8px',
+            'border': '1px solid #555',
+            'borderRadius': '3px',
+            'cursor': 'pointer',
+            'marginRight': '10px'
+        }),
         html.A("🔍 Filter Points", href="/filter/", target="_blank", style={
             'color': '#00aaff',
             'fontSize': '14px',
@@ -171,8 +191,9 @@ app.layout = html.Div([
         }
     ),
 
-    # Store for initial load trigger
-    dcc.Store(id='initial-load', data=True)
+    # Stores
+    dcc.Store(id='initial-load', data=True),
+    dcc.Store(id='visibility-state', data='show')  # 'show' or 'hide'
 ], style={
     'backgroundColor': '#000000',
     'margin': '0',
@@ -257,16 +278,36 @@ def fetch_data_from_influxdb():
         return pd.DataFrame(), datetime.now(), None, False
 
 # =============================================================================
-# CALLBACK
+# CALLBACKS
 # =============================================================================
+
+@app.callback(
+    Output('visibility-state', 'data'),
+    [Input('hide-all-btn', 'n_clicks'),
+     Input('show-all-btn', 'n_clicks')],
+    [State('visibility-state', 'data')]
+)
+def update_visibility(hide_clicks, show_clicks, current_state):
+    """Update visibility state when Hide All or Show All is clicked"""
+    ctx = callback_context
+    if not ctx.triggered:
+        return current_state
+
+    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    if button_id == 'hide-all-btn':
+        return 'hide'
+    elif button_id == 'show-all-btn':
+        return 'show'
+    return current_state
 
 @app.callback(
     [Output('status', 'children'),
      Output('main-timeseries', 'figure')],
     [Input('refresh-btn', 'n_clicks'),
-     Input('initial-load', 'data')]
+     Input('initial-load', 'data'),
+     Input('visibility-state', 'data')]
 )
-def update_graph(n_clicks, initial):
+def update_graph(n_clicks, initial, visibility_state):
     """Update the main graph"""
     df, timestamp, active_filter, is_limited = fetch_data_from_influxdb()
 
@@ -286,13 +327,17 @@ def update_graph(n_clicks, initial):
 
     if not df.empty:
         sorted_sensors = sorted(df['sensor'].unique(), key=natural_sort_key)
+        # Set visibility based on state
+        trace_visible = True if visibility_state == 'show' else 'legendonly'
+
         for i, sensor in enumerate(sorted_sensors):
             sensor_df = df[df['sensor'] == sensor].sort_values('time')
             fig.add_trace(go.Scatter(
                 x=sensor_df['time'],
                 y=sensor_df['value'],
                 name=sensor,
-                uid=sensor,  # Stable ID for uirevision to match traces
+                uid=sensor,
+                visible=trace_visible,
                 mode='lines',
                 line=dict(color=colors[i % len(colors)], width=1.5),
                 legendrank=i,
@@ -352,25 +397,9 @@ def update_graph(n_clicks, initial):
             font=dict(size=10),
             itemsizing='constant',
             tracegroupgap=2,
-            itemclick='toggle',        # Single click toggles trace
-            itemdoubleclick='toggleothers'  # Double click isolates trace
-        ),
-        updatemenus=[
-            dict(
-                type='buttons',
-                direction='left',
-                x=0.5, y=1.08,
-                xanchor='center', yanchor='top',
-                showactive=False,
-                buttons=[
-                    dict(label='Show All', method='restyle', args=['visible', True]),
-                    dict(label='Hide All', method='restyle', args=['visible', 'legendonly'])
-                ],
-                bgcolor='#1a1a1a',
-                bordercolor='#333',
-                font=dict(color='#e0e0e0', size=10)
-            )
-        ]
+            itemclick='toggle',
+            itemdoubleclick='toggleothers'
+        )
     )
 
     return status, fig
