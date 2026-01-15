@@ -250,20 +250,18 @@ def fetch_data_from_influxdb():
         if df.empty:
             return df, datetime.now(), active_filter, False
 
-        # Apply filter or limit
+        # Apply filter if exists
         if active_filter is not None:
-            # User has set a filter - show exactly those points
             df = df[df['sensor'].isin(active_filter)]
-            is_limited = False
+
+        # ALWAYS enforce the sensor limit (even with filter)
+        all_sensors = sorted(df['sensor'].unique(), key=natural_sort_key)
+        if len(all_sensors) > MAX_SENSORS_UNFILTERED:
+            limited_sensors = all_sensors[:MAX_SENSORS_UNFILTERED]
+            df = df[df['sensor'].isin(limited_sensors)]
+            is_limited = True
         else:
-            # No filter - limit to first N sensors alphabetically
-            all_sensors = sorted(df['sensor'].unique(), key=natural_sort_key)
-            if len(all_sensors) > MAX_SENSORS_UNFILTERED:
-                limited_sensors = all_sensors[:MAX_SENSORS_UNFILTERED]
-                df = df[df['sensor'].isin(limited_sensors)]
-                is_limited = True
-            else:
-                is_limited = False
+            is_limited = False
 
         return df, datetime.now(), active_filter, is_limited
 
@@ -330,7 +328,9 @@ def update_graph(n_clicks, initial, visibility_state):
 
     # Status text
     num_sensors = df['sensor'].nunique() if not df.empty else 0
-    if active_filter is not None:
+    if active_filter is not None and is_limited:
+        status = f"{timestamp.strftime('%H:%M:%S')} | 🔍 FILTERED: {num_sensors} points (max {MAX_SENSORS_UNFILTERED} - refine filter)"
+    elif active_filter is not None:
         status = f"{timestamp.strftime('%H:%M:%S')} | 🔍 FILTERED: {num_sensors} points"
     elif is_limited:
         status = f"{timestamp.strftime('%H:%M:%S')} | Showing first {num_sensors} points (use Filter for more)"
