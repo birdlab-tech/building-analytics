@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from influxdb_client import InfluxDBClient
 import json
 import os
+import re
 
 # =============================================================================
 # CONFIGURATION
@@ -31,10 +32,7 @@ INFLUXDB_CONFIG = {
 
 REFRESH_INTERVAL = 15000  # 15 seconds (fast refresh for filter changes, local DB is fast)
 TIME_WINDOW = 24  # Hours of data to display (keep low for memory - 168h was using 450MB!)
-
-# Filter which points to track (to reduce clutter)
-# Options: 'all', 'pumps', 'valves', 'ahu', 'temp'
-TRACK_FILTER = 'all'
+MAX_SENSORS_UNFILTERED = 50  # Limit sensors when no filter active (for usability)
 
 # Filter file path (set by filter interface)
 FILTER_FILE = '/tmp/bms_filter_active.json'
@@ -183,31 +181,17 @@ app.layout = html.Div([
 # DATA MANAGEMENT
 # =============================================================================
 
-def should_track_point(label):
-    """Filter which points to track based on TRACK_FILTER"""
-    if TRACK_FILTER == 'all':
-        return True
-
-    label_lower = label.lower()
-
-    if TRACK_FILTER == 'pumps':
-        return 'pump' in label_lower
-    elif TRACK_FILTER == 'valves':
-        return 'valve' in label_lower
-    elif TRACK_FILTER == 'ahu':
-        return 'ahu' in label_lower
-    elif TRACK_FILTER == 'temp':
-        return 'temp' in label_lower
-
-    return True
+def natural_sort_key(label):
+    """Sort key that handles numbers properly (D1, D2, D10 not D1, D10, D2)"""
+    parts = re.split(r'(\d+)', label)
+    return [int(part) if part.isdigit() else part.lower() for part in parts]
 
 def load_active_filter():
     """Load active filter from file if it exists"""
     try:
         if os.path.exists(FILTER_FILE):
             with open(FILTER_FILE, 'r') as f:
-                filter_data = json.load(f)
-                return filter_data.get('points', [])
+                return json.load(f).get('points', [])
         return None
     except Exception as e:
         print(f"Error loading filter: {e}")
@@ -216,12 +200,9 @@ def load_active_filter():
 def fetch_data_from_influxdb():
     """Fetch data from InfluxDB for the specified time window"""
     try:
-        # Load active filter from file
         active_filter = load_active_filter()
-
         query_api = influx_client.query_api()
 
-        # Query last TIME_WINDOW hours of data for Sackville building
         query = f'''
         from(bucket: "{INFLUXDB_CONFIG['bucket']}")
           |> range(start: -{TIME_WINDOW}h)
@@ -232,39 +213,43 @@ def fetch_data_from_influxdb():
 
         result = query_api.query(query, org=INFLUXDB_CONFIG['org'])
 
-        # Convert to pandas DataFrame
+        # Convert to DataFrame
         data_points = []
         for table in result:
             for record in table.records:
-                sensor_name = record.values.get('sensor_name')
-                value = record.get_value()
-                time = record.get_time()
-
-                # Apply active filter if exists, otherwise use track filter
-                if active_filter is not None:
-                    # Use filter from filter interface
-                    if sensor_name in active_filter:
-                        data_points.append({
-                            'sensor': sensor_name,
-                            'value': value,
-                            'time': time
-                        })
-                elif should_track_point(sensor_name):
-                    # Use built-in track filter
-                    data_points.append({
-                        'sensor': sensor_name,
-                        'value': value,
-                        'time': time
-                    })
+                data_points.append({
+                    'sensor': record.values.get('sensor_name'),
+                    'value': record.get_value(),
+                    'time': record.get_time()
+                })
 
         df = pd.DataFrame(data_points)
-        return df, datetime.now(), active_filter
+
+        if df.empty:
+            return df, datetime.now(), active_filter, False
+
+        # Apply filter or limit
+        if active_filter is not None:
+            # User has set a filter - show exactly those points
+            df = df[df['sensor'].isin(active_filter)]
+            is_limited = False
+        else:
+            # No filter - limit to first N sensors alphabetically
+            all_sensors = sorted(df['sensor'].unique(), key=natural_sort_key)
+            if len(all_sensors) > MAX_SENSORS_UNFILTERED:
+                limited_sensors = all_sensors[:MAX_SENSORS_UNFILTERED]
+                df = df[df['sensor'].isin(limited_sensors)]
+                is_limited = True
+            else:
+                is_limited = False
+
+        return df, datetime.now(), active_filter, is_limited
 
     except Exception as e:
         print(f"Error fetching from InfluxDB: {e}")
         import traceback
         traceback.print_exc()
-        return pd.DataFrame(), datetime.now(), None
+        return pd.DataFrame(), datetime.now(), None, False
 
 # =============================================================================
 # CALLBACK
@@ -277,87 +262,52 @@ def fetch_data_from_influxdb():
 )
 def update_graph(n):
     """Update the main graph"""
-
-    # Fetch data from InfluxDB
-    df, timestamp, active_filter = fetch_data_from_influxdb()
+    df, timestamp, active_filter, is_limited = fetch_data_from_influxdb()
 
     # Status text
-    unique_points = df['sensor'].nunique() if not df.empty else 0
-    total_datapoints = len(df)
-
+    num_sensors = df['sensor'].nunique() if not df.empty else 0
     if active_filter is not None:
-        # Show filtered view indicator
-        status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | 🔍 FILTERED: {unique_points} points | {total_datapoints} polls ({TIME_WINDOW}h window)"
+        status = f"{timestamp.strftime('%H:%M:%S')} | 🔍 FILTERED: {num_sensors} points"
+    elif is_limited:
+        status = f"{timestamp.strftime('%H:%M:%S')} | Showing first {num_sensors} points (use Filter for more)"
     else:
-        # Show all points
-        status = f"Last Update: {timestamp.strftime('%H:%M:%S')} | {unique_points} points | {total_datapoints} polls ({TIME_WINDOW}h window)"
+        status = f"{timestamp.strftime('%H:%M:%S')} | {num_sensors} points"
 
     # Create figure
     fig = go.Figure()
-
-    # Color palette
     colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#95E1D3', '#F38181',
               '#AA96DA', '#FCBAD3', '#A8D8EA', '#FF8B94', '#C7CEEA']
 
-    # Natural sort key function - handles numbers properly (D1, D2, D3... not D1, D21, D22, D2, D3)
-    import re
-    def natural_sort_key(label):
-        # Split into text and number parts
-        parts = re.split(r'(\d+)', label)
-        # Convert numeric parts to integers for proper sorting
-        return [int(part) if part.isdigit() else part.lower() for part in parts]
-
-    # Group data by sensor and sort
     if not df.empty:
-        sensors_data = {}
-        for sensor in df['sensor'].unique():
+        sorted_sensors = sorted(df['sensor'].unique(), key=natural_sort_key)
+        for i, sensor in enumerate(sorted_sensors):
             sensor_df = df[df['sensor'] == sensor].sort_values('time')
-            sensors_data[sensor] = sensor_df
-
-        # Sort sensors by natural order
-        sorted_sensors = sorted(sensors_data.keys(), key=natural_sort_key)
-
-        # Add all sensors with data
-        color_idx = 0
-        for sensor in sorted_sensors:
-            sensor_df = sensors_data[sensor]
-
             fig.add_trace(go.Scatter(
                 x=sensor_df['time'],
                 y=sensor_df['value'],
-                name=sensor,  # Always show full sensor name
+                name=sensor,
                 mode='lines',
-                line=dict(
-                    color=colors[color_idx % len(colors)],
-                    width=1.5
-                ),
-                hovertemplate='<b>%{fullData.name}</b><br>' +
-                              'Time: %{x|%H:%M:%S}<br>' +
-                              'Value: %{y:.2f}<br>' +
-                              '<extra></extra>'
+                line=dict(color=colors[i % len(colors)], width=1.5),
+                hovertemplate='<b>%{fullData.name}</b><br>Time: %{x|%H:%M:%S}<br>Value: %{y:.2f}<extra></extra>'
             ))
 
-            color_idx += 1
-
-    # Layout - maximize graph space
+    # Layout - single update_layout call
     fig.update_layout(
-        # No title - we have it in the header
-        margin=dict(l=50, r=200, t=40, b=40),  # Top margin for buttons
-        plot_bgcolor='#1E1E1E',  # Dark gray for plot area (matches visualize_timeseries.py)
-        paper_bgcolor='#2D2D2D',  # Slightly lighter gray for figure (matches visualize_timeseries.py)
+        margin=dict(l=50, r=200, t=40, b=40),
+        plot_bgcolor='#1E1E1E',
+        paper_bgcolor='#2D2D2D',
         font=dict(color='#e0e0e0', size=11),
-
-        # Preserve user interactions (zoom, pan, legend selections) across updates
         uirevision='constant',
-
-        # X-axis - fixed range controls
+        hovermode='closest',
+        hoverlabel=dict(bgcolor='#1a1a1a', font_size=11),
+        dragmode='pan',
         xaxis=dict(
             title='',
-            gridcolor='#333333',  # Medium gray grid (matches visualize_timeseries.py)
+            gridcolor='#333333',
             showgrid=True,
             zeroline=False,
             color='#E0E0E0',
-            fixedrange=False,  # Allow zooming
+            fixedrange=False,
             rangeselector=dict(
                 buttons=[
                     dict(count=1, label="1h", step="hour", stepmode="backward"),
@@ -372,16 +322,9 @@ def update_graph(n):
                 bgcolor='#1a1a1a',
                 activecolor='#00aaff',
                 font=dict(color='#e0e0e0', size=10),
-                x=0,
-                y=1.08,
-                xanchor='left',
-                yanchor='top'
+                x=0, y=1.08, xanchor='left', yanchor='top'
             )
-        )
-    )
-
-    # Y-axis - always auto-scale (use scroll wheel on Y-axis to zoom Y only)
-    fig.update_layout(
+        ),
         yaxis=dict(
             title=dict(text='Value', font=dict(size=12)),
             gridcolor='#333333',
@@ -393,10 +336,8 @@ def update_graph(n):
         ),
         legend=dict(
             orientation='v',
-            yanchor='top',
-            y=1,
-            xanchor='left',
-            x=1.01,
+            yanchor='top', y=1,
+            xanchor='left', x=1.01,
             bgcolor='rgba(0,0,0,0.8)',
             bordercolor='#333',
             borderwidth=1,
@@ -405,17 +346,12 @@ def update_graph(n):
             tracegroupgap=2,
             groupclick='toggleitem'
         ),
-        hovermode='closest',
-        hoverlabel=dict(bgcolor='#1a1a1a', font_size=11),
-        dragmode='pan',
         updatemenus=[
             dict(
                 type='buttons',
                 direction='left',
-                x=0.5,
-                y=1.08,
-                xanchor='center',
-                yanchor='top',
+                x=0.5, y=1.08,
+                xanchor='center', yanchor='top',
                 showactive=False,
                 buttons=[
                     dict(label='Show All', method='restyle', args=['visible', True]),
