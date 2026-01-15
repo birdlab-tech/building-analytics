@@ -288,6 +288,7 @@ def update_graph(n):
                 name=sensor,
                 mode='lines',
                 line=dict(color=colors[i % len(colors)], width=1.5),
+                legendrank=i,  # Force legend order
                 hovertemplate='<b>%{fullData.name}</b><br>Time: %{x|%H:%M:%S}<br>Value: %{y:.2f}<extra></extra>'
             ))
 
