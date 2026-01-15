@@ -1,0 +1,46 @@
+From: Fin AI Agent from Anthropic <support@mail.anthropic.com> 
+Sent: 14 January 2026 19:38
+To: Alex Amies <alex@alexamies.com>
+Subject: Re: Billing issue complaint
+
+ 
+Hi Alex,
+Let me explain what likely happened and how to address this.
+Understanding Extra Usage for Claude Code:
+When you reach your plan's usage limit, you can enable "extra usage" to continue working beyond those limits.[1] However, it's possible to slightly exceed your defined usage limit because our system checks limits before processing a request, not after - meaning you may bypass your limit with a single request, then subsequent requests get blocked.[2]
+Rate Limit Behavior:
+Your plan's included usage limits reset every 5 hours once reached, and extra usage doesn't affect this reset timing. This explains why you had to wait for the time limit to expire.
+Requesting a Refund:
+To request a refund for your payments:
+1.	Log in to your account and click your initials/name in the lower left corner
+2.	Select "Get help" to open the messenger
+3.	Click "Send us a message"
+4.	Click "Accept," then "Claude Refund Request"
+5.	Follow the prompts to check eligibility and process your request[3] 
+Important Note: All payments are generally non-refundable except as expressly provided in our Terms of Service or where required by law.
+For your specific billing issue and to ensure this doesn't happen again, you'll need to work directly with our human support team through the refund request process above.
+Does this help clarify what happened, and do you have any other questions about the refund process?
+
+
+From: Alex Amies 
+Sent: 14 January 2026 19:36
+To: support@anthropic.com
+Subject: Billing issue complaint
+
+Dear Anthropic Support,
+
+I’m writing to complain about a billing issue with Claude Code.
+
+On 14/1/26, I made two payments (£5 and £10) to extend my usage limits after receiving rate limit notifications.
+
+Despite both payments being debited from my account, I continued to receive rate limit messages stating I had hit my limit and could not continue to use the service.
+
+I know the amounts I’ve mentioned are not huge but I was working to a deadline and urgently needed to get an analytics platform operational before a deadline following bugs arising from Claude Code’s modifications. No extension was provided and I had to wait until the time limit expired by which time it was too late. There have been commercial consequences as a result of missing the deadline which may lead to me having to cancel my Anthropic account subscription altogether.
+
+I’d like to request a refund and an explanation re why the rate limits were not lifted following these payments. Can you also provide any assurance this issue will be resolved for future use? Screenshot evidence of the payment confirmations alongside the continued rate limit messages is available on request.
+
+I look forward to hearing from you.
+
+Regards,
+
+Alex

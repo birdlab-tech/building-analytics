@@ -1,0 +1,41 @@
+User:
+
+  It worked for Y-Min when I set to 0 (moved about 5 seconds later). Then Y-Max to 80 (about 10 seconds later). Then I tried Y-Max to 100 and nothing happened. Then tried 101 and
+  nothing happened. I think it might be that after the first auto-refresh it just stops noting the settings. I tried Y-min 20 and watched 20 seconds on my stopwatch but nothing
+  happened. Maybe the best thing would be a gentle refresh button which gives it a nudge but is careful not to change anything else. Maybe next to the Y-Min and Y-Max entries as sees
+  to relate to those mainly. Just hid all points then selected one. It's survived for a minute so far. Pretty sure any further chances to Y-axis will do nothing.
+
+Claude Code:
+
+  Honestly, for tomorrow's demo you need stability over features. My recommendations:
+
+  Or accept current limitations - don't use Y-axis controls during demo, just show the data with defaults
+
+  The Y-axis bug where changes stop working after first change is a Plotly/Dash state management issue that needs more investigation than we have time for tonight.
+
+  What do you want to do?
+
+● You're right. The time range buttons work because they're Plotly's built-in rangeselector - handled natively in the browser, no Python callback needed.
+
+  My Y-Min/Y-Max inputs trigger a Python callback that rebuilds the figure - that's what's causing the issues.
+
+  Simplest fix: Remove Y-Min/Y-Max inputs and just use Plotly's built-in zoom:
+  - Scroll wheel on the Y-axis to zoom in/out
+  - Click and drag on the Y-axis to pan
+  - Double-click to reset
+
+  This works without any callback and won't cause crashes. Want me to remove the Y-Min/Y-Max inputs for now? You can still control the Y-axis view manually during the demo.
+
+User:
+
+  Re Plotly built-in zoom - I'd be happy with it as long is it just zoomed Y SEPARATELY from X. 2D zooming sucks as it's hardly ever what you
+  want to do. Is easy to do X, Y one after the other as needed. I think we have to get rid of the Y limit entries as clearly far too convoluted and undermines the overall
+  reliability.
+
+Claude Code:
+
+  For Y-axis only zoom in Plotly: scroll wheel while hovering over the Y-axis zooms just Y. Same for X-axis. Only zooms both when you're over the plot area.
+
+  Let me remove the Y-Min/Y-Max inputs and simplify
+
+**GOT CUT OFF BY LIMIT**

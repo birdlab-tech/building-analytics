@@ -1,0 +1,24 @@
+Can use console at:
+https://cloud.digitalocean.com
+(log in using GitHub credentials)
+
+Or PowerShell tab with:
+ssh root@167.172.54.56
+
+
+Proper recovery script:
+ssh root@167.172.54.56 "bash /opt/bms-analytics/recovery.sh"
+
+
+Also read or get Claude Code to read:
+
+CLAUDE_PROTOCOL.md
+CLAUDE_STARTUP_GUIDE.md
+CRASH_RECOVERY.md
+
+In C:\Users\ahami\OneDrive\Documents\KCL PhD\ResearchProposal\Independent Building Analytics
+
+
+Is actually nicer to work in PowerShell tab than the Digital Ocean console (for copying/pasting etc) but works best when command lines in this format:
+
+ssh root@167.172.54.56 "xxx"
