@@ -30,7 +30,7 @@ INFLUXDB_CONFIG = {
     'bucket': 'bms_data'
 }
 
-TIME_WINDOW = 24  # Hours of data to display
+TIME_WINDOW = 72  # Hours of data to display (3 days)
 MAX_SENSORS_UNFILTERED = 50  # Limit sensors when no filter active (for usability)
 
 # Filter file path (set by filter interface)
