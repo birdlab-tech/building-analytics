@@ -483,7 +483,7 @@ def apply_filters_to_dashboard(n_clicks, all_points, blocker_patterns, blocker_i
                 'count': len(filtered)
             }, f)
         print(f"✅ Saved {len(filtered)} points to {filter_file}")
-        return f"✅ Applied {len(filtered)} points to dashboard (refresh dashboard or wait 15 seconds to see changes)"
+        return f"✅ Applied {len(filtered)} points to dashboard (click Refresh on dashboard to see changes)"
     except Exception as e:
         print(f"❌ Error saving filter: {e}")
         return f"❌ Error: {str(e)}"

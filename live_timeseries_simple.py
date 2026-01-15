@@ -292,9 +292,10 @@ def update_graph(n_clicks, initial):
                 x=sensor_df['time'],
                 y=sensor_df['value'],
                 name=sensor,
+                uid=sensor,  # Stable ID for uirevision to match traces
                 mode='lines',
                 line=dict(color=colors[i % len(colors)], width=1.5),
-                legendrank=i,  # Force legend order
+                legendrank=i,
                 hovertemplate='<b>%{fullData.name}</b><br>Time: %{x|%H:%M:%S}<br>Value: %{y:.2f}<extra></extra>'
             ))
 
